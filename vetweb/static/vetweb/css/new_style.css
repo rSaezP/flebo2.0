@@ -627,7 +627,28 @@ nav a {
     font-weight: 500;
 }
 
+/* Badge del carrito */
+.nav-icon {
+    position: relative;
+    margin-left: 1rem;
+    color: #333;
+    font-size: 1.25rem;
+}
 
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #f44336;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 }
 

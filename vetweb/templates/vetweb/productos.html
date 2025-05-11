@@ -1,170 +1,124 @@
-{% extends 'vetweb/base.html' %}
-{% load static %}
-
+{% extends 'vetweb/base.html' %} 
+{% load static %} 
+{% load humanize %} 
 {% block title %}Equipos y Productos - Laboratorio Veterinario{% endblock %}
-
 {% block content %}
 
 <!-- Hero Section -->
 <div class="hero-slider product-page">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="{% static 'vetweb/img/produ.jpg' %}" class="d-block w-100" alt="FleboVet">
-            <div class="carousel-caption">
-                <div class="container">
-                    <div class="caption-content text-start">
-                        <h1>Equipos y Productos</h1>
-                        <p>Innovación y calidad en diagnóstico veterinario</p>
-                    </div>
-                </div>
-            </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img
+        src="{% static 'vetweb/img/produ.jpg' %}"
+        class="d-block w-100"
+        alt="FleboVet"
+      />
+      <div class="carousel-caption">
+        <div class="container">
+          <div class="caption-content text-start">
+            <h1>Equipos y Productos</h1>
+            <p>Innovación y calidad en diagnóstico veterinario</p>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+</div>
+
+<!-- Filtros (opcional) -->
+<div class="container-fluid bg-light py-3">
+  <div class="container">
+    <form method="get" class="row g-3 align-items-center">
+      <div class="col-md-3">
+        <input
+          type="text"
+          name="buscar"
+          class="form-control"
+          placeholder="Buscar..."
+          value="{{ request.GET.buscar }}"
+        />
+      </div>
+      <div class="col-md-2">
+        <input
+          type="number"
+          name="min_precio"
+          class="form-control"
+          placeholder="Precio mínimo"
+          value="{{ request.GET.min_precio }}"
+        />
+      </div>
+      <div class="col-md-2">
+        <input
+          type="number"
+          name="max_precio"
+          class="form-control"
+          placeholder="Precio máximo"
+          value="{{ request.GET.max_precio }}"
+        />
+      </div>
+      <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+        {% if filtros_aplicados %}
+        <a
+          href="{% url 'vetweb:productos' %}"
+          class="btn btn-outline-secondary ms-2"
+          >Limpiar</a
+        >
+        {% endif %}
+      </div>
+    </form>
+  </div>
 </div>
 
 <div class="container py-5">
     <div class="row g-4 justify-content-center">
-        <!-- HV-COA 7100 -->
-        <div class="col-md-4 mb-4">
-            <div class="form-product">
-                <div class="product-img-container">
-                    <img src="{% static 'vetweb/img/producto1.png' %}" alt="Analizador" class="product-img">
-                </div>
-                <div class="product-content">
-                    <h2>HV-COA 7100</h2>
-                    <p>Analizador de Coagulación Veterinaria</p>
-                    <div class="features">
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>Rápido y Preciso</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>Resultados en minutos</span>
-                        </div>
-                    </div>
-                    <a href="{% url 'vetweb:detalle_producto' producto_id=1 %}" class="btn-ver">Ver Detalles</a>
-                </div>
+      {% for producto in productos %}
+      <div class="col-md-4 mb-4">
+        <div class="form-product">
+          <div class="product-img-container">
+            {% if producto.imagen %}
+            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product-img">
+            {% else %}
+            <img src="{% static 'vetweb/img/no-image.jpg' %}" alt="Sin imagen" class="product-img">
+            {% endif %}
+          </div>
+          <div class="product-content">
+            <h2>{{ producto.nombre }}</h2>
+            <p>{{ producto.descripcion|striptags|truncatechars:100 }}</p>
+  
+            <!-- Precio -->
+            <div class="product-price mb-3">
+              <span class="price">${{ producto.precio|intcomma }}</span>
             </div>
-        </div>
-
-        <!-- HV-FIA 3000 -->
-        <div class="col-md-4 mb-4">
-            <div class="form-product">
-                <div class="product-img-container">
-                    <img src="{% static 'vetweb/img/producto2.jpg' %}" alt="HV-FIA 3000" class="product-img">
-                </div>
-                <div class="product-content">
-                    <h2>HV-FIA 3000</h2>
-                    <p>Analizador de Inmunofluorescencia Cuantitativo</p>
-                    <div class="features">
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>T4, TSH, Cortisol, Hormonas</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>Resultados en 3-15 minutos</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>Almacena 1000 resultados</span>
-                        </div>
-                    </div>
-                    <a href="{% url 'vetweb:detalle_producto' producto_id=2 %}" class="btn-ver">Ver Detalles</a>
-                </div>
+  
+            <!-- Botones -->
+            <div class="d-flex gap-2">
+              <a href="{% url 'vetweb:detalle_producto' producto.id %}" class="btn-ver flex-grow-1">Ver Detalles</a>
+              <form action="{% url 'vetweb:carrito_agregar' producto.id %}" method="post" class="flex-grow-1">
+                {% csrf_token %}
+                <button type="submit" class="btn-add-to-cart">
+                  <i class="bi bi-cart-plus"></i>
+                </button>
+              </form>
             </div>
+          </div>
         </div>
-
-        <!-- PCR Pointcare V1 -->
-        <div class="col-md-4 mb-4">
-            <div class="form-product">
-                <div class="product-img-container">
-                    <img src="{% static 'vetweb/img/producto3.png' %}" alt="Pointcare PCR V1" class="product-img">
-                </div>
-                <div class="product-content">
-                    <h2>Pointcare® PCR V1</h2>
-                    <p>Analizador PCR en tiempo real</p>
-                    <div class="features">
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>Extracción libre de DNA/RNA</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>Resultados en 60 minutos</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>6 wells de procesamiento</span>
-                        </div>
-                    </div>
-                    <a href="{% url 'vetweb:detalle_producto' producto_id=3 %}" class="btn-ver">Ver Detalles</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Test Rápidos Veterinarios -->
-        <div class="col-md-4 mb-4">
-            <div class="form-product">
-                <div class="product-img-container">
-                    <img src="{% static 'vetweb/img/producto4.png' %}" alt="Test Rápidos" class="product-img">
-                </div>
-                <div class="product-content">
-                    <h2>Test Rápidos</h2>
-                    <p>Diagnóstico Veterinario</p>
-                    <div class="features">
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>CPV/CDV/FPV/FIV/otras pruebas</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>Resultados en 5-10 minutos</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>Alta sensibilidad y especificidad</span>
-                        </div>
-                    </div>
-                    <a href="{% url 'vetweb:detalle_producto' producto_id=4 %}" class="btn-ver">Ver Detalles</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pointcare V3 -->
-        <div class="col-md-4 mb-4">
-            <div class="form-product">
-                <div class="product-img-container">
-                    <img src="{% static 'vetweb/img/producto5.jpeg' %}" alt="Pointcare V3" class="product-img">
-                </div>
-                <div class="product-content">
-                    <h2>Pointcare V3</h2>
-                    <p>Analizador de Química Clínica y Electrolitos</p>
-                    <div class="features">
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>Perfil Hepático y Renal</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>Resultados en 7 minutos</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="check">✓</span>
-                            <span>Pantalla táctil 4.3"</span>
-                        </div>
-                    </div>
-                    <a href="{% url 'vetweb:detalle_producto' producto_id=5 %}" class="btn-ver">Ver Detalles</a>
-                </div>
-            </div>
-        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5">
+        <img src="{% static 'vetweb/img/no-results.svg' %}" alt="Sin resultados" style="width: 120px" class="mb-3">
+        <h4>No se encontraron productos</h4>
+        {% if filtros_aplicados %}
+        <p>Intenta ajustar tus filtros de búsqueda</p>
+        {% endif %}
+      </div>
+      {% endfor %}
     </div>
-</div>
+  </div>
 
 <style>
-/* Contenedor del producto */
-.form-product {
+  /* Contenedor del producto */
+  .form-product {
     background: rgba(255, 255, 255, 0.9);
     padding: 30px;
     border-radius: 8px;
@@ -173,15 +127,15 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-}
+  }
 
-.form-product:hover {
+  .form-product:hover {
     border-color: rgba(17, 127, 239, 0.5);
     box-shadow: 0 0 0 2px rgba(17, 127, 239, 0.1);
-}
+  }
 
-/* Contenedor de imagen */
-.product-img-container {
+  /* Contenedor de imagen */
+  .product-img-container {
     width: 100%;
     height: 200px;
     margin-bottom: 20px;
@@ -191,60 +145,60 @@
     background-color: #f8f9fa;
     padding: 15px;
     border-radius: 4px;
-}
+  }
 
-/* Imagen del producto */
-.product-img {
+  /* Imagen del producto */
+  .product-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     max-width: 100%;
     max-height: 100%;
-}
+  }
 
-/* Contenido del producto */
-.product-content {
+  /* Contenido del producto */
+  .product-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-}
+  }
 
-/* Título */
-.form-product h2 {
+  /* Título */
+  .form-product h2 {
     color: #117fef;
     font-size: 22px;
     margin-bottom: 8px;
     font-weight: 500;
-}
+  }
 
-/* Descripción */
-.form-product p {
+  /* Descripción */
+  .form-product p {
     color: #666;
     font-size: 15px;
     margin-bottom: 20px;
-}
+  }
 
-/* Features */
-.features {
+  /* Features */
+  .features {
     flex: 1;
     margin-bottom: 20px;
-}
+  }
 
-.feature-item {
+  .feature-item {
     display: flex;
     align-items: center;
     margin-bottom: 12px;
     color: #666;
     font-size: 14px;
-}
+  }
 
-.check {
+  .check {
     color: #117fef;
     margin-right: 10px;
-}
+  }
 
-/* Botón */
-.btn-ver {
+  /* Botón */
+  .btn-ver {
     width: 100%;
     padding: 12px;
     background: transparent;
@@ -256,27 +210,74 @@
     border-radius: 6px;
     transition: all 0.3s ease;
     margin-top: auto;
-}
+  }
 
-.btn-ver:hover {
+  .btn-ver:hover {
     background: rgba(17, 127, 239, 0.1);
     border-color: rgba(17, 127, 239, 0.5);
     color: rgba(17, 127, 239, 1);
     text-decoration: none;
-}
+  }
 
-/* Hero Section */
-.hero-slider.product-page {
+  /* Hero Section */
+  .hero-slider.product-page {
     height: 500px !important;
     margin-top: 76px;
-}
+  }
 
-.hero-slider.product-page .carousel-item {
+  .hero-slider.product-page .carousel-item {
     height: 500px;
-}
+  }
 
-.hero-slider.product-page .carousel-caption {
-    background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
-}
+  .hero-slider.product-page .carousel-caption {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+  }
+
+  /* Nuevos estilos para el precio y botón de carrito */
+  .product-price {
+    margin: 15px 0;
+  }
+
+  .price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #117fef;
+  }
+
+  .btn-add-to-cart {
+    width: 100%;
+    padding: 12px;
+    background: rgba(17, 127, 239, 0.1);
+    border: 1px solid rgba(17, 127, 239, 0.3);
+    color: rgba(17, 127, 239, 0.8);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-add-to-cart:hover {
+    background: rgba(17, 127, 239, 0.2);
+    border-color: rgba(17, 127, 239, 0.5);
+    color: rgba(17, 127, 239, 1);
+  }
+
+  .d-flex.gap-2 {
+    gap: 10px;
+  }
+
+  .bg-light {
+    background-color: #f8f9fa !important;
+  }
+
+  /* Ajuste para mensaje sin resultados */
+  .text-center.py-5 {
+    padding: 3rem 0;
+  }
 </style>
 {% endblock %}

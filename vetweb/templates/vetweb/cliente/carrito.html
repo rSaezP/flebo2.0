@@ -1,122 +1,152 @@
-{% extends 'vetweb/base.html' %}
-{% load static %}
-
-{% block content %}
+{% extends 'vetweb/base.html' %} 
+{% load static %} 
+{% block content %} 
+{% load humanize %}
 <div class="carrito-section">
-    <div class="container py-5">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-white">
-                        <h2 class="mb-0 texto-principal">Mi Carrito de Compras</h2>
-                    </div>
-                    <div class="card-body">
-                        {% if carrito.items.all %}
-                            {% for item in carrito.items.all %}
-                                <div class="producto-carrito mb-3 p-3 border-bottom">
-                                    <div class="row align-items-center">
-                                        <div class="col-md-2">
-                                            {% if item.producto.imagen %}
-                                                <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="img-fluid rounded">
-                                            {% else %}
-                                                <img src="{% static 'vetweb/img/no-image.jpg' %}" alt="Sin imagen" class="img-fluid rounded">
-                                            {% endif %}
-                                        </div>
-                                        <div class="col-md-4">
-                                            <h5 class="mb-1">{{ item.producto.nombre }}</h5>
-                                            <p class="text-muted mb-0">{{ item.producto.descripcion|truncatechars:100 }}</p>
-                                        </div>
-                                        <div class="col-md-2 text-center">
-                                            <div class="cantidad-control">
-                                                <button class="btn btn-sm btn-outline-secondary" onclick="actualizarCantidad({{ item.id }}, 'decrease')">-</button>
-                                                <span class="mx-2">{{ item.cantidad }}</span>
-                                                <button class="btn btn-sm btn-outline-secondary" onclick="actualizarCantidad({{ item.id }}, 'increase')">+</button>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 text-center">
-                                            <span class="precio">${{ item.get_subtotal }}</span>
-                                        </div>
-                                        <div class="col-md-2 text-center">
-                                            <a href="{% url 'vetweb:carrito_eliminar' item.id %}" class="btn btn-eliminar">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="text-center py-5">
-                                <img src="{% static 'vetweb/img/empty-cart.svg' %}" alt="Carrito vacío" class="mb-3" style="width: 100px;">
-                                <h3 class="texto-principal">Tu carrito está vacío</h3>
-                                <p class="text-muted">¡Agrega algunos productos!</p>
-                                <a href="{% url 'vetweb:productos' %}" class="btn btn-primary mt-3">Ver Productos</a>
-                            </div>
-                        {% endif %}
-                    </div>
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card shadow-sm">
+          <div class="card-header bg-white">
+            <h2 class="mb-0 texto-principal">Mi Carrito de Compras</h2>
+          </div>
+          <div class="card-body">
+            {% if carrito.items.all %} {% for item in carrito.items.all %}
+            <div class="producto-carrito mb-3 p-3 border-bottom">
+              <div class="row align-items-center">
+                <div class="col-md-2">
+                  {% if item.producto.imagen %}
+                  <img
+                    src="{{ item.producto.imagen.url }}"
+                    alt="{{ item.producto.nombre }}"
+                    class="img-fluid rounded"
+                  />
+                  {% else %}
+                  <img
+                    src="{% static 'vetweb/img/no-image.jpg' %}"
+                    alt="Sin imagen"
+                    class="img-fluid rounded"
+                  />
+                  {% endif %}
                 </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-white">
-                        <h3 class="mb-0 texto-principal">Resumen de Compra</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Subtotal</span>
-                            <span>${{ carrito.get_total }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>IVA (19%)</span>
-                            <span>${{ carrito.get_total|multiply:0.19 }}</span>
-                        </div>
-                        <hr>
-                        <div class="d-flex justify-content-between mb-3">
-                            <strong>Total</strong>
-                            <strong>${{ carrito.get_total|multiply:1.19 }}</strong>
-                        </div>
-                        <button class="contact-button w-100">Proceder al Pago</button>
-                    </div>
+                <div class="col-md-4">
+                  <h5 class="mb-1">{{ item.producto.nombre }}</h5>
+                  <p class="text-muted mb-0">
+                    {{ item.producto.descripcion|truncatechars:100 }}
+                  </p>
                 </div>
+                <div class="col-md-2 text-center">
+                  <div class="cantidad-control">
+                    <button
+                      class="btn btn-sm btn-outline-secondary"
+                      onclick="actualizarCantidad({{ item.id }}, 'decrease')"
+                    >
+                      -
+                    </button>
+                    <span class="mx-2">{{ item.cantidad }}</span>
+                    <button
+                      class="btn btn-sm btn-outline-secondary"
+                      onclick="actualizarCantidad({{ item.id }}, 'increase')"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-2 text-center">
+                  <span class="precio">${{ item.get_subtotal }}</span>
+                </div>
+                <div class="col-md-2 text-center">
+                  <a
+                    href="{% url 'vetweb:carrito_eliminar' item.id %}"
+                    class="btn btn-eliminar"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </a>
+                </div>
+              </div>
             </div>
+            {% endfor %} {% else %}
+            <div class="text-center py-5">
+              <img
+                src="{% static 'vetweb/img/empty-cart.svg' %}"
+                alt="Carrito vacío"
+                class="mb-3"
+                style="width: 100px"
+              />
+              <h3 class="texto-principal">Tu carrito está vacío</h3>
+              <p class="text-muted">¡Agrega algunos productos!</p>
+              <a
+                href="{% url 'vetweb:productos' %}"
+                class="btn btn-primary mt-3"
+                >Ver Productos</a
+              >
+            </div>
+            {% endif %}
+          </div>
         </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-header bg-white">
+            <h3 class="mb-0 texto-principal">Resumen de Compra</h3>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+              <span>Subtotal</span>
+              <span>${{ subtotal|intcomma }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+              <span>IVA (19%)</span>
+              <span>${{ iva|intcomma }}</span>
+            </div>
+            <hr />
+            <div class="d-flex justify-content-between mb-3">
+              <strong>Total</strong>
+              <strong>${{ total|intcomma }}</strong>
+            </div>
+            <button class="contact-button w-100">Proceder al Pago</button>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <style>
-.carrito-section {
+  .carrito-section {
     padding-top: 70px;
     background-color: #f8f9fa;
     min-height: calc(100vh - 70px);
-}
+  }
 
-.texto-principal {
+  .texto-principal {
     color: rgba(17, 127, 239, 0.8);
-}
+  }
 
-.card {
+  .card {
     border: 1px solid rgba(17, 127, 239, 0.1);
     border-radius: 10px;
-}
+  }
 
-.card-header {
+  .card-header {
     border-bottom: 1px solid rgba(17, 127, 239, 0.1);
-}
+  }
 
-.producto-carrito {
+  .producto-carrito {
     transition: all 0.3s ease;
-}
+  }
 
-.producto-carrito:hover {
+  .producto-carrito:hover {
     background-color: rgba(17, 127, 239, 0.05);
-}
+  }
 
-.cantidad-control {
+  .cantidad-control {
     display: flex;
     align-items: center;
     justify-content: center;
-}
+  }
 
-.cantidad-control button {
+  .cantidad-control button {
     border: 1px solid rgba(17, 127, 239, 0.3);
     color: rgba(17, 127, 239, 0.8);
     width: 30px;
@@ -125,20 +155,20 @@
     align-items: center;
     justify-content: center;
     padding: 0;
-}
+  }
 
-.btn-eliminar {
+  .btn-eliminar {
     color: #dc3545;
     border: none;
     background: transparent;
     transition: all 0.3s ease;
-}
+  }
 
-.btn-eliminar:hover {
+  .btn-eliminar:hover {
     color: #bd2130;
-}
+  }
 
-.contact-button {
+  .contact-button {
     width: 100%;
     padding: 12px;
     background: transparent;
@@ -149,31 +179,31 @@
     letter-spacing: 1px;
     transition: all 0.3s ease;
     border-radius: 5px;
-}
+  }
 
-.contact-button:hover {
+  .contact-button:hover {
     background: rgba(17, 127, 239, 0.1);
     border-color: rgba(17, 127, 239, 0.8);
     color: rgba(17, 127, 239, 1);
-}
+  }
 
-@media (max-width: 768px) {
+  @media (max-width: 768px) {
     .producto-carrito .row {
-        flex-direction: column;
-        text-align: center;
+      flex-direction: column;
+      text-align: center;
     }
-    
+
     .producto-carrito .col-md-2,
     .producto-carrito .col-md-4 {
-        margin-bottom: 1rem;
+      margin-bottom: 1rem;
     }
-}
+  }
 </style>
 
 <script>
-function actualizarCantidad(itemId, action) {
+  function actualizarCantidad(itemId, action) {
     // Aquí irá la lógica para actualizar la cantidad
     // Se implementará con AJAX más adelante
-}
+  }
 </script>
 {% endblock %}

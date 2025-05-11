@@ -1,8 +1,10 @@
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.db.models.signals import post_save
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
@@ -14,6 +16,7 @@ from django.http import FileResponse
 from .forms import CustomUserCreationForm  # Añadimos esta importación
 from functools import wraps
 from .models import Producto, Carrito, CarritoItem, Orden, OrdenItem, UserProfile
+from django.dispatch import receiver
 
 
 
@@ -31,32 +34,28 @@ def index(request):
 
 def lista_productos(request):
     productos = Producto.objects.all().order_by('id')
-   
-
-    # Filtro por categoría
+    
+    # Filtros (mantén tu código actual)
     categoria_id = request.GET.get('categoria')
     if categoria_id:
         productos = productos.filter(categoria_id=categoria_id)
-
-    # Filtro por precio
+    
     min_precio = request.GET.get('min_precio')
     max_precio = request.GET.get('max_precio')
     if min_precio:
         productos = productos.filter(precio__gte=min_precio)
     if max_precio:
         productos = productos.filter(precio__lte=max_precio)
-
-    # Búsqueda
+    
     busqueda = request.GET.get('buscar')
     if busqueda:
         productos = productos.filter(
             Q(nombre__icontains=busqueda) |
             Q(descripcion__icontains=busqueda)
         )
-
     context = {
         'productos': productos,
-       
+        'filtros_aplicados': any([categoria_id, min_precio, max_precio, busqueda])  # Nuevo
     }
     return render(request, 'vetweb/productos.html', context)
     
@@ -276,9 +275,22 @@ def admin_producto_eliminar(request, producto_id):
 
 # Vistas del Carrito
 @login_required
+@login_required
 def carrito_ver(request):
     carrito, created = Carrito.objects.get_or_create(user=request.user)
-    return render(request, 'vetweb/cliente/carrito.html', {'carrito': carrito})
+    
+    # Calculamos los valores directamente en la vista
+    subtotal = int(carrito.get_total())
+    iva = int(subtotal * 0.19)  # 19% de IVA
+    total = int(subtotal * 1.19)
+    
+    context = {
+        'carrito': carrito,
+        'subtotal': subtotal,
+        'iva': iva,
+        'total': total,
+    }
+    return render(request, 'vetweb/cliente/carrito.html', context)
 
 @login_required
 def carrito_agregar(request, producto_id):
@@ -311,3 +323,8 @@ def carrito_eliminar(request, item_id):
 def historial_compras(request):
     ordenes = Orden.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'vetweb/cliente/historial.html', {'ordenes': ordenes})
+
+@receiver(post_save, sender=User)
+def create_user_cart(sender, instance, created, **kwargs):
+    if created:
+        Carrito.objects.create(user=instance)

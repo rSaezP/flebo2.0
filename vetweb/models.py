@@ -8,6 +8,7 @@ def get_pdf_name(instance, filename):
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=200)
+    precio = models.IntegerField(default=0)
     descripcion = models.TextField()
     imagen = models.ImageField(upload_to='productos/', blank=True)
     stock = models.IntegerField(default=0)
@@ -45,7 +46,8 @@ def save_user_profile(sender, instance, **kwargs):
         UserProfile.objects.create(user=instance, role='CLIENT')
         
 class Carrito(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
