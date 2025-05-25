@@ -48,12 +48,7 @@ path('password_reset/complete/',  # Cambié 'reset/done' por 'password_reset/com
     ),         
     name='password_reset_complete'),
 
-        # URLs de administración
-    path('admin/productos/', views.admin_productos, name='admin_productos'),
-    path('admin/productos/crear/', views.admin_producto_crear, name='admin_producto_crear'),
-    path('admin/productos/<int:producto_id>/editar/', views.admin_producto_editar, name='admin_producto_editar'),
-    path('admin/productos/<int:producto_id>/eliminar/', views.admin_producto_eliminar, name='admin_producto_eliminar'),
-    
+       
     # URLs del carrito
     path('carrito/', views.carrito_ver, name='carrito_ver'),
     path('carrito/agregar/<int:producto_id>/', views.carrito_agregar, name='carrito_agregar'),
@@ -61,6 +56,21 @@ path('password_reset/complete/',  # Cambié 'reset/done' por 'password_reset/com
     
     # URLs del cliente
     path('mi-cuenta/historial/', views.historial_compras, name='historial_compras'),
+    
+    # URLs del panel de administración
+    path('panel/dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('panel/productos/', views.admin_productos, name='admin_productos'),
+    path('panel/productos/crear/', views.admin_producto_crear, name='admin_producto_crear'),
+    path('panel/productos/<int:producto_id>/editar/', views.admin_producto_editar, name='admin_producto_editar'),
+    path('panel/productos/<int:producto_id>/eliminar/', views.admin_producto_eliminar, name='admin_producto_eliminar'),
+ 
+    # URLs de lista de deseos
+    path('lista-deseos/', views.lista_deseos_view, name='lista_deseos_view'),
+    
+    path('lista-deseos/agregar/<int:producto_id>/', views.agregar_a_deseos, name='agregar_a_deseos'),
+    path('lista-deseos/quitar/<int:producto_id>/', views.quitar_de_deseos, name='quitar_de_deseos'),
+    
+
 ]
 
 

@@ -1,0 +1,135 @@
+{% extends 'vetweb/base.html' %}
+{% block content %}
+<div class="admin-section">
+   <div class="container py-5">
+       <div class="row">
+           <!-- Sidebar -->
+           <div class="col-lg-3">
+               <div class="admin-sidebar">
+                   <h5>Panel de Admin</h5>
+                   <div class="nav flex-column">
+                       <a href="{% url 'vetweb:admin_dashboard' %}" class="nav-link">
+                           <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                       </a>
+                       <a href="{% url 'vetweb:admin_productos' %}" class="nav-link active">
+                           <i class="fas fa-box me-2"></i>Productos
+                       </a>
+                       <a href="{% url 'vetweb:index' %}" class="nav-link">
+                           <i class="fas fa-home me-2"></i>Volver
+                       </a>
+                   </div>
+               </div>
+           </div>
+
+           <!-- Content -->
+           <div class="col-lg-9">
+               <div class="content-card">
+                   <div class="d-flex justify-content-between mb-4">
+                       <h2>Gestión de Productos</h2>
+                       <a href="{% url 'vetweb:admin_producto_crear' %}" class="btn btn-primary">
+                           <i class="fas fa-plus me-2"></i>Nuevo Producto
+                       </a>
+                   </div>
+
+                   <div class="table-responsive">
+                       <table class="table">
+                           <thead>
+                               <tr>
+                                   <th>Imagen</th>
+                                   <th>Producto</th>
+                                   <th>Stock</th>
+                                   <th>Precio</th>
+                                   <th>Fecha</th>
+                                   <th>Acciones</th>
+                               </tr>
+                           </thead>
+                           <tbody>
+                               {% for producto in productos %}
+                               <tr>
+                                   <td width="80">
+                                       {% if producto.imagen %}
+                                       <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product-img">
+                                       {% endif %}
+                                   </td>
+                                   <td>
+                                       <strong>{{ producto.nombre }}</strong>
+                                   </td>
+                                   <td>{{ producto.stock }}</td>
+                                   <td>${{ producto.precio }}</td>
+                                   <td>{{ producto.fecha_creacion|date:"d/m/Y" }}</td>
+                                   <td>
+                                       <a href="{% url 'vetweb:admin_producto_editar' producto.id %}" class="btn btn-sm btn-outline-primary me-2">
+                                           <i class="fas fa-edit"></i>
+                                       </a>
+                                       <form method="post" action="{% url 'vetweb:admin_producto_eliminar' producto.id %}" class="d-inline">
+                                           {% csrf_token %}
+                                           <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Confirmar eliminación?')">
+                                               <i class="fas fa-trash"></i>
+                                           </button>
+                                       </form>
+                                   </td>
+                               </tr>
+                               {% endfor %}
+                           </tbody>
+                       </table>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
+</div>
+
+<style>
+.admin-section {
+   padding-top: 120px !important;
+   min-height: calc(100vh - 76px);
+   background: #f8f9fa;
+   width: 100%;
+   position: relative;
+   z-index: 1;
+}
+
+.admin-sidebar {
+   background: white;
+   padding: 20px;
+   border-radius: 8px;
+   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.content-card {
+   background: white;
+   padding: 25px;
+   border-radius: 8px;
+   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.nav-link {
+   padding: 10px;
+   color: #666;
+   border-radius: 6px;
+   transition: all 0.3s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+   background: rgba(17, 127, 239, 0.1);
+   color: var(--flebo-blue);
+}
+
+.product-img {
+   width: 60px;
+   height: 60px;
+   object-fit: cover;
+   border-radius: 4px;
+}
+
+.img-preview {
+   max-height: 150px;
+   border-radius: 4px;
+}
+
+.table td {
+   vertical-align: middle;
+}
+</style>
+{% endblock %}

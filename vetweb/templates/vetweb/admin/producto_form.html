@@ -1,0 +1,139 @@
+{% extends 'vetweb/base.html' %}
+{% block content %}
+<div class="admin-section">
+   <div class="container py-5">
+       <div class="row justify-content-center">
+           <div class="col-lg-8">
+               <div class="content-card">
+                   <h2>{{ producto.id|yesno:"Editar,Crear" }} Producto</h2>
+                   <form method="post" enctype="multipart/form-data">
+                       {% csrf_token %}
+                       <div class="mb-3">
+                           <label class="form-label">Nombre</label>
+                           <input type="text" name="nombre" class="form-control" value="{{ producto.nombre|default:'' }}" required>
+                       </div>
+                       <div class="mb-3">
+                           <label class="form-label">Descripción</label>
+                           <textarea name="descripcion" class="form-control" rows="4" required>{{ producto.descripcion|default:'' }}</textarea>
+                       </div>
+                       <div class="mb-3">
+                           <label class="form-label">Precio</label>
+                           <input type="number" name="precio" class="form-control" value="{{ producto.precio|default:0 }}" required>
+                       </div>
+                       <div class="mb-3">
+                           <label class="form-label">Stock</label>
+                           <input type="number" name="stock" class="form-control" value="{{ producto.stock|default:0 }}" required>
+                       </div>
+                       <div class="mb-3">
+                           <label class="form-label">Imagen</label>
+                           {% if producto.imagen %}
+                           <div class="mb-2">
+                               <img src="{{ producto.imagen.url }}" class="img-preview">
+                           </div>
+                           {% endif %}
+                           <input type="file" name="imagen" class="form-control" accept="image/*">
+                       </div>
+                       <div class="mb-3">
+                           <label class="form-label">PDF (opcional)</label>
+                           {% if producto.pdf %}
+                           <div class="mb-2">
+                               <a href="{{ producto.pdf.url }}" target="_blank" class="btn btn-sm btn-outline-secondary">Ver PDF actual</a>
+                           </div>
+                           {% endif %}
+                           <input type="file" name="pdf" class="form-control" accept="application/pdf">
+                       </div>
+                       <div class="d-flex justify-content-between">
+                           <a href="{% url 'vetweb:admin_productos' %}" class="btn btn-outline-secondary">Volver</a>
+                           <button type="submit" class="btn btn-primary">Guardar</button>
+                       </div>
+                   </form>
+               </div>
+           </div>
+       </div>
+   </div>
+</div>
+
+<style>
+    /* Estilos básicos */
+    .admin-section {
+        padding-top: 120px !important;
+        background: #f8f9fa;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        padding-bottom: 30px !important;
+    }
+    
+    .admin-sidebar {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .content-card {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .nav-link {
+        padding: 10px;
+        color: #666;
+        border-radius: 6px;
+        transition: all 0.3s;
+    }
+    
+    .nav-link:hover,
+    .nav-link.active {
+        background: rgba(17, 127, 239, 0.1);
+        color: var(--flebo-blue);
+    }
+    
+    .product-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    
+    .img-preview {
+        max-height: 150px;
+        border-radius: 4px;
+    }
+    
+    .table td {
+        vertical-align: middle;
+    }
+    
+    @media (max-width: 768px) {
+        .admin-section {
+            padding-top: 80px !important;
+        }
+        
+        header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 9999 !important;
+            background-color: white !important;
+        }
+        
+        .navbar-toggler {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        .content-card {
+            padding: 15px !important;
+        }
+        
+        .img-preview {
+            max-width: 100% !important;
+        }
+    }
+</style>
+{% endblock %}

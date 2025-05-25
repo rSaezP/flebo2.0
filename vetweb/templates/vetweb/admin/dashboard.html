@@ -1,0 +1,217 @@
+{% extends 'vetweb/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="admin-panel">
+    <div class="container py-5">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="admin-sidebar">
+                    <div class="admin-profile text-center">
+                        <i class="bi bi-person-circle"></i>
+                        <h5>{{ request.user.username }}</h5>
+                        <p>Administrador</p>
+                    </div>
+                    <div class="admin-nav">
+                        <a href="{% url 'vetweb:admin_dashboard' %}" class="nav-item active">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                        <a href="{% url 'vetweb:admin_productos' %}" class="nav-item">
+                            <i class="bi bi-box"></i> Productos
+                        </a>
+                        <a href="{% url 'vetweb:index' %}" class="nav-item">
+                            <i class="bi bi-house"></i> Volver al Inicio
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="admin-content">
+                    <!-- Stats Cards -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="bi bi-box-seam"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>{{ total_productos }}</h3>
+                                    <p>Total Productos</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>{{ productos_sin_stock }}</h3>
+                                    <p>Sin Stock</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Table -->
+                    <div class="admin-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Últimos Productos</h5>
+                            <a href="{% url 'vetweb:admin_producto_crear' %}" class="btn-admin">
+                                <i class="bi bi-plus"></i> Nuevo Producto
+                            </a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Imagen</th>
+                                        <th>Nombre</th>
+                                        <th>Stock</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for producto in ultimos_productos %}
+                                    <tr>
+                                        <td width="60">
+                                            {% if producto.imagen %}
+                                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product-img">
+                                            {% else %}
+                                            <div class="no-image">Sin imagen</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ producto.nombre }}</td>
+                                        <td>{{ producto.stock }}</td>
+                                        <td>
+                                            <a href="{% url 'vetweb:admin_producto_editar' producto.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-panel {
+        padding-top: 120px !important;
+        min-height: auto !important;
+        background: #f8f9fa;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        padding-bottom: 30px !important;
+    }
+    
+    .admin-sidebar {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        position: sticky;
+        top: 100px;
+    }
+    
+    .admin-profile i {
+        font-size: 48px;
+        color: var(--flebo-blue);
+    }
+    
+    .admin-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .nav-item {
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        color: #666;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .nav-item:hover,
+    .nav-item.active {
+        background: rgba(17, 127, 239, 0.1);
+        color: var(--flebo-blue);
+    }
+    
+    .admin-content {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px !important;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.25rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .btn-admin {
+        padding: 0.5rem 1rem;
+        background: var(--flebo-blue);
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-admin:hover {
+        opacity: 0.9;
+        color: white;
+    }
+    
+    .product-img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    
+    .card-header {
+        padding: 1rem 0;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+    
+    @media (max-width: 991px) {
+        .admin-sidebar {
+            position: static;
+            margin-bottom: 1.5rem;
+        }
+    
+        .admin-panel {
+            padding-top: 80px !important;
+        }
+        
+        .admin-content {
+            padding: 1rem !important;
+        }
+    }
+    
+    .whatsapp-float {
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+</style>
+{% endblock %}

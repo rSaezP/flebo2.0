@@ -17,6 +17,12 @@ from .forms import CustomUserCreationForm  # Añadimos esta importación
 from functools import wraps
 from .models import Producto, Carrito, CarritoItem, Orden, OrdenItem, UserProfile
 from django.dispatch import receiver
+from django.http import JsonResponse
+from .models import ListaDeseos
+from .decorators import admin_required
+from django.db.models import Count
+from django.http import HttpResponse
+from django.contrib.auth.models import User
 
 
 
@@ -53,9 +59,16 @@ def lista_productos(request):
             Q(nombre__icontains=busqueda) |
             Q(descripcion__icontains=busqueda)
         )
+    
+    # Obtener lista de productos en deseos para el usuario actual
+    productos_en_deseos = []
+    if request.user.is_authenticated:
+        productos_en_deseos = ListaDeseos.objects.filter(user=request.user).values_list('producto_id', flat=True)
+    
     context = {
         'productos': productos,
-        'filtros_aplicados': any([categoria_id, min_precio, max_precio, busqueda])  # Nuevo
+        'productos_en_deseos': productos_en_deseos,
+        'filtros_aplicados': any([categoria_id, min_precio, max_precio, busqueda])
     }
     return render(request, 'vetweb/productos.html', context)
     
@@ -77,10 +90,7 @@ def login_admin(request):
             return render(request, 'vetweb/admin/login.html', {'error': 'Credenciales inválidas'})
     return render(request, 'vetweb/admin/login.html')
 
-@login_required
-def admin_dashboard(request):
-    productos = Producto.objects.all()
-    return render(request, 'vetweb/admin/dashboard.html', {'productos': productos})
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -142,9 +152,7 @@ def logout_view(request):
     logout(request)
     return redirect('vetweb:index')
 
-@login_required
-def profile_view(request):
-    return render(request, 'vetweb/cliente/perfil.html')
+
 
 
 def detalle_producto(request, producto_id):
@@ -154,12 +162,7 @@ def detalle_producto(request, producto_id):
         'MEDIA_URL': settings.MEDIA_URL
     })
     
-@login_required
-def admin_dashboard(request):
-    if request.user.userprofile.role != 'ADMIN':
-        return redirect('vetweb:index')  # Redirigir si no es administrador
-    productos = Producto.objects.all()
-    return render(request, 'vetweb/admin/dashboard.html', {'productos': productos})    
+
 
 def download_pdf(request , producto_id):
     try:
@@ -203,75 +206,7 @@ def producto_crear(request):
         pass
     return render(request, 'vetweb/productos/crear.html')
 
-# Vistas de Administración (CRUD)
-@login_required
-def admin_productos(request):
-    if not request.user.userprofile.role == 'ADMIN':
-        messages.error(request, 'No tienes permisos para acceder a esta sección')
-        return redirect('vetweb:index')
-        
-    productos = Producto.objects.all()
-    return render(request, 'vetweb/admin/productos.html', {'productos': productos})
 
-@login_required
-def admin_producto_crear(request):
-    if not request.user.userprofile.role == 'ADMIN':
-        messages.error(request, 'No tienes permisos para acceder a esta sección')
-        return redirect('vetweb:index')
-        
-    if request.method == 'POST':
-        # Procesar el formulario
-        nombre = request.POST.get('nombre')
-        descripcion = request.POST.get('descripcion')
-        precio = request.POST.get('precio')
-        stock = request.POST.get('stock')
-        imagen = request.FILES.get('imagen')
-        
-        Producto.objects.create(
-            nombre=nombre,
-            descripcion=descripcion,
-            precio=precio,
-            stock=stock,
-            imagen=imagen
-        )
-        messages.success(request, 'Producto creado exitosamente')
-        return redirect('vetweb:admin_productos')
-        
-    return render(request, 'vetweb/admin/producto_crear.html')
-
-@login_required
-def admin_producto_editar(request, producto_id):
-    if not request.user.userprofile.role == 'ADMIN':
-        messages.error(request, 'No tienes permisos para acceder a esta sección')
-        return redirect('vetweb:index')
-        
-    producto = get_object_or_404(Producto, id=producto_id)
-    
-    if request.method == 'POST':
-        producto.nombre = request.POST.get('nombre')
-        producto.descripcion = request.POST.get('descripcion')
-        producto.precio = request.POST.get('precio')
-        producto.stock = request.POST.get('stock')
-        
-        if request.FILES.get('imagen'):
-            producto.imagen = request.FILES.get('imagen')
-            
-        producto.save()
-        messages.success(request, 'Producto actualizado exitosamente')
-        return redirect('vetweb:admin_productos')
-        
-    return render(request, 'vetweb/admin/producto_editar.html', {'producto': producto})
-
-@login_required
-def admin_producto_eliminar(request, producto_id):
-    if not request.user.userprofile.role == 'ADMIN':
-        messages.error(request, 'No tienes permisos para acceder a esta sección')
-        return redirect('vetweb:index')
-        
-    producto = get_object_or_404(Producto, id=producto_id)
-    producto.delete()
-    messages.success(request, 'Producto eliminado exitosamente')
-    return redirect('vetweb:admin_productos')
 
 # Vistas del Carrito
 @login_required
@@ -294,23 +229,37 @@ def carrito_ver(request):
 
 @login_required
 def carrito_agregar(request, producto_id):
+    """Agregar un producto al carrito"""
+    if request.method != 'POST':
+        return redirect('vetweb:productos')
+    
     producto = get_object_or_404(Producto, id=producto_id)
     carrito, created = Carrito.objects.get_or_create(user=request.user)
     
     # Verificar si el producto ya está en el carrito
-    carrito_item, created = CarritoItem.objects.get_or_create(
+    carrito_item, item_created = CarritoItem.objects.get_or_create(
         carrito=carrito,
         producto=producto,
         defaults={'cantidad': 1}
     )
     
-    if not created:
+    if not item_created:
         carrito_item.cantidad += 1
         carrito_item.save()
     
-    messages.success(request, 'Producto agregado al carrito')
+    # Mensaje de éxito normal (para redirecciones)
+    messages.success(request, f"{producto.nombre} agregado al carrito")
+    
+    # Si es una solicitud AJAX
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'items_count': carrito.items.count(),
+            'message': f"{producto.nombre} agregado al carrito"
+        })
+    
+    # Redirección normal
     return redirect('vetweb:carrito_ver')
-
 @login_required
 def carrito_eliminar(request, item_id):
     item = get_object_or_404(CarritoItem, id=item_id, carrito__user=request.user)
@@ -328,3 +277,186 @@ def historial_compras(request):
 def create_user_cart(sender, instance, created, **kwargs):
     if created:
         Carrito.objects.create(user=instance)
+        
+@login_required
+def agregar_a_deseos(request, producto_id):
+    """Agregar o quitar un producto de la lista de deseos"""
+    if request.method != 'POST':
+        return redirect('vetweb:productos')
+    
+    producto = get_object_or_404(Producto, id=producto_id)
+    
+    # Verificar si ya existe en la lista de deseos
+    deseo_existente = ListaDeseos.objects.filter(user=request.user, producto=producto).first()
+    
+    if deseo_existente:
+        # Si ya existe, lo quitamos
+        deseo_existente.delete()
+        in_wishlist = False
+        mensaje = f"{producto.nombre} eliminado de tu lista de deseos."
+    else:
+        # Si no existe, lo agregamos
+        ListaDeseos.objects.create(user=request.user, producto=producto)
+        in_wishlist = True
+        mensaje = f"{producto.nombre} agregado a tu lista de deseos."
+    
+    # Mensaje de éxito normal (para redirecciones)
+    messages.success(request, mensaje)
+    
+    # Si es una solicitud AJAX
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'in_wishlist': in_wishlist,
+            'message': mensaje
+        })
+    
+    # Redirección normal
+    return redirect(request.META.get('HTTP_REFERER', 'vetweb:productos'))
+    
+@login_required
+def lista_deseos_view(request):
+    deseos = ListaDeseos.objects.filter(user=request.user)
+    return render(request, 'vetweb/cliente/lista_deseos.html', {
+        'deseos': deseos
+    })
+
+@login_required
+def quitar_de_deseos(request, producto_id):
+    if request.method == 'POST':
+        ListaDeseos.objects.filter(
+            user=request.user,
+            producto_id=producto_id
+        ).delete()
+        messages.success(request, 'Producto eliminado de tu lista de deseos')
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True,
+                'message': 'Producto eliminado de tu lista de deseos'
+            })
+        
+        return redirect('vetweb:lista_deseos_view')
+    return redirect('vetweb:lista_deseos_view')
+
+@login_required
+def profile_view(request):
+    """Vista del perfil de usuario con lista de deseos e historial de compras"""
+    # Obtenemos o creamos el perfil del usuario
+    try:
+        user_profile = request.user.userprofile
+    except UserProfile.DoesNotExist:
+        user_profile = UserProfile.objects.create(user=request.user, role='CLIENT')
+    
+    # Obtener lista de deseos
+    lista_deseos = ListaDeseos.objects.filter(user=request.user).select_related('producto')
+    
+    # Obtener historial de compras (ajusta el campo si es necesario)
+    try:
+        ordenes = Orden.objects.filter(user=request.user).order_by('-created_at')
+    except:
+        try:
+            # Intenta con otro nombre de campo si created_at no existe
+            ordenes = Orden.objects.filter(user=request.user).order_by('-fecha_creacion')
+        except:
+            # Si todo falla, al menos devolver algo
+            ordenes = Orden.objects.filter(user=request.user)
+    
+    # Procesar actualización de perfil
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if email:
+            request.user.email = email
+            request.user.save()
+            messages.success(request, 'Perfil actualizado exitosamente')
+        return redirect('vetweb:profile')
+    
+    context = {
+        'user_profile': user_profile,
+        'lista_deseos': lista_deseos,
+        'ordenes': ordenes,
+    }
+    
+    return render(request, 'vetweb/cliente/perfil.html', context)
+
+@admin_required
+def admin_dashboard(request):
+    total_productos = Producto.objects.count()
+    productos_sin_stock = Producto.objects.filter(stock=0).count()
+    ultimos_productos = Producto.objects.order_by('-fecha_creacion')[:5]
+    
+    context = {
+        'total_productos': total_productos,
+        'productos_sin_stock': productos_sin_stock,
+        'ultimos_productos': ultimos_productos,
+    }
+    
+    return render(request, 'vetweb/admin/dashboard.html', context)
+
+@admin_required
+def admin_productos(request):
+    productos = Producto.objects.all().order_by('-fecha_creacion')
+    return render(request, 'vetweb/admin/productos_admin.html', {'productos': productos})
+
+@admin_required
+def admin_producto_crear(request):
+    if request.method == 'POST':
+        try:
+            # Crear el producto con los datos del formulario
+            producto = Producto.objects.create(
+                nombre=request.POST.get('nombre'),
+                descripcion=request.POST.get('descripcion'),
+                precio=request.POST.get('precio', 0),
+                stock=request.POST.get('stock', 0)
+            )
+            
+            # Manejar la imagen si se proporcionó una
+            if 'imagen' in request.FILES:
+                producto.imagen = request.FILES['imagen']
+            
+            # Manejar el PDF si se proporcionó uno
+            if 'pdf' in request.FILES:
+                producto.pdf = request.FILES['pdf']
+                
+            producto.save()
+            
+            messages.success(request, 'Producto creado exitosamente')
+            return redirect('vetweb:admin_productos')
+        except Exception as e:
+            messages.error(request, f'Error al crear el producto: {str(e)}')
+            
+    return render(request, 'vetweb/admin/producto_form.html', {
+        'producto': None
+    })
+
+@admin_required
+def admin_producto_editar(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    if request.method == 'POST':
+        try:
+            producto.nombre = request.POST.get('nombre')
+            producto.descripcion = request.POST.get('descripcion')
+            producto.precio = request.POST.get('precio', 0)
+            producto.stock = request.POST.get('stock', 0)
+            
+            if 'imagen' in request.FILES:
+                producto.imagen = request.FILES['imagen']
+            if 'pdf' in request.FILES:
+                producto.pdf = request.FILES['pdf']
+                
+            producto.save()
+            messages.success(request, 'Producto actualizado exitosamente')
+            return redirect('vetweb:admin_productos')
+        except Exception as e:
+            messages.error(request, f'Error al actualizar el producto: {str(e)}')
+    return render(request, 'vetweb/admin/producto_form.html', {'producto': producto})
+
+@admin_required
+def admin_producto_eliminar(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    try:
+        producto.delete()
+        messages.success(request, 'Producto eliminado exitosamente')
+    except Exception as e:
+        messages.error(request, f'Error al eliminar el producto: {str(e)}')
+    return redirect('vetweb:admin_productos')

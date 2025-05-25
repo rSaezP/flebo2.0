@@ -1,0 +1,298 @@
+{% extends 'vetweb/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-content">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="perfil-sidebar">
+                    <div class="user-info text-center mb-4">
+                        <div class="profile-image">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <h5 class="mt-3">{{ request.user.username }}</h5>
+                        <p class="text-muted mb-0">{{ user_profile.role }}</p>
+                    </div>
+                    <div class="list-group">
+                        <a href="{% url 'vetweb:profile' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-person me-2"></i> Mi Perfil
+                        </a>
+                        <a href="{% url 'vetweb:lista_deseos_view' %}" class="list-group-item list-group-item-action active">
+                            <i class="bi bi-heart me-2"></i> Lista de Deseos
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido principal -->
+            <div class="col-lg-9">
+                {% if deseos %}
+                <div class="productos-grid">
+                    {% for deseo in deseos %}
+                    <div class="producto-card">
+                        <div class="image-container">
+                            {% if deseo.producto.imagen %}
+                                <img src="{{ deseo.producto.imagen.url }}" alt="{{ deseo.producto.nombre }}">
+                            {% endif %}
+                        </div>
+                        <div class="product-content">
+                            <h3>{{ deseo.producto.nombre }}</h3>
+                            <div class="actions">
+                                <form method="post" action="{% url 'vetweb:quitar_de_deseos' deseo.producto.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-remove">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                </form>
+                                <a href="{% url 'vetweb:detalle_producto' producto_id=deseo.producto.id %}" class="btn-ver">
+                                    Ver Detalles
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="bi bi-heart"></i>
+                    <h2>Tu lista de deseos está vacía</h2>
+                    <p>Explora nuestros productos y agrega tus favoritos</p>
+                    <a href="{% url 'vetweb:productos' %}" class="btn-ver">Ver Productos</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Elimina todos los estilos anteriores de .page-content y usa solo estos */
+    .page-content {
+        margin-top: 120px !important; /* Fuerza el margen superior */
+        background: #f8f9fa;
+        min-height: auto !important; /* Cambiado de calc(100vh - 196px) */
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        padding-bottom: 30px !important; /* Añadido para dar un poco de espacio al final */
+    }
+    
+    /* Y asegúrate que el container dentro tenga estos márgenes */
+    .page-content .container {
+        margin-top: 0;
+        padding-top: 0;
+    }
+    
+    .perfil-sidebar, .productos-grid {
+        height: 100%;  /* Misma altura */
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        padding: 20px;
+    }
+    
+    .profile-image {
+        width: 80px;
+        height: 80px;
+        background: rgba(17, 127, 239, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+    
+    .profile-image i {
+        font-size: 40px;
+        color: var(--flebo-blue);
+    }
+    
+    .producto-card {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .image-container {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    
+    .image-container img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    
+    .product-content h3 {
+        font-size: 16px;
+        margin: 0 0 15px;
+        color: #333;
+    }
+    
+    .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    
+    .btn-remove, 
+    .btn-ver {
+        padding: 8px 16px;
+        border: 1px solid rgba(17, 127, 239, 0.3);
+        background: transparent;
+        color: var(--flebo-blue);
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    
+    .btn-remove {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn-remove:hover,
+    .btn-ver:hover {
+        background: rgba(17, 127, 239, 0.1);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .empty-state i {
+        font-size: 48px;
+        color: rgba(17, 127, 239, 0.2);
+        margin-bottom: 20px;
+    }
+    
+    /* Para la grid de productos */
+    .productos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+        height: fit-content;
+    }
+
+        /* Para casos donde hay muy poco contenido */
+    @media (max-height: 800px) {
+        .page-content {
+            margin-bottom: 30px !important; /* Espacio adicional antes del footer */
+        }
+    }
+    
+    @media (max-width: 768px) {
+        /* Estilos esenciales para el navbar móvil */
+        header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 9999 !important;
+            background-color: white !important;
+        }
+        
+        .navbar-collapse.show,
+        .navbar-collapse.collapsing {
+            display: block !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            background-color: white !important;
+            z-index: 1000 !important;
+            padding: 10px !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .navbar-toggler {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Ajuste de la página de contenido */
+        .page-content {
+            margin-top: 60px !important; /* Menor margen en móvil */
+            padding-bottom: 20px !important; /* Evitar espacios en blanco al final */
+            
+        }
+        
+        /* Organizar la estructura en columnas para móvil */
+        .row {
+            display: flex;
+            flex-direction: column !important;
+            gap: 20px !important;
+        }
+        
+        .col-lg-3, 
+        .col-lg-9 {
+            width: 100% !important;
+            padding: 0 !important;
+        }
+        
+        /* Ajustar sidebar de perfil */
+        .perfil-sidebar {
+            margin-bottom: 20px !important;
+        }
+        
+        /* Ajustar grid de productos */
+        .productos-grid {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+            gap: 15px !important;
+        }
+        
+        .image-container {
+            height: 120px !important;
+        }
+        
+        .product-content h3 {
+            font-size: 14px !important;
+        }
+        
+        /* Asegurarse que el footer no deje espacios */
+        .footer-modern {
+            margin-top: 0 !important;
+        }
+        
+        /* Mejorar visualización de botones en móvil */
+        .actions {
+            gap: 5px !important;
+        }
+        
+        .btn-remove, 
+        .btn-ver {
+            padding: 6px 10px !important;
+            font-size: 13px !important;
+        }
+        
+        /* Arreglar posibles problemas con WhatsApp flotante */
+        .whatsapp-float {
+            bottom: 15px !important;
+            right: 15px !important;
+        }
+        .empty-state, 
+        .productos-grid {
+            margin-bottom: 20px !important;
+        }
+
+    }
+</style>
+{% endblock %}

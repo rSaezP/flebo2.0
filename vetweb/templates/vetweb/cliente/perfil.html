@@ -1,0 +1,336 @@
+{% extends 'vetweb/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-content">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar izquierda -->
+            <div class="col-lg-3">
+                <div class="perfil-sidebar">
+                    <div class="user-info text-center mb-4">
+                        <div class="profile-image">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <h5 class="mt-3">{{ request.user.username }}</h5>
+                        <p class="text-muted mb-0">{{ user_profile.role }}</p>
+                    </div>
+
+                    <!-- Enlaces de navegación (pestañas) -->
+                    <div class="list-group nav-tabs" id="profileTabs" role="tablist">
+                        <a href="#profile" class="list-group-item list-group-item-action active" id="profile-tab" data-bs-toggle="tab" role="tab" aria-controls="profile" aria-selected="true">
+                            <i class="bi bi-person me-2"></i> Mi Perfil
+                        </a>
+                        <a href="#wishlist" class="list-group-item list-group-item-action" id="wishlist-tab" data-bs-toggle="tab" role="tab" aria-controls="wishlist" aria-selected="false">
+                            <i class="bi bi-heart me-2"></i> Lista de Deseos
+                        </a>
+                        <a href="#orders" class="list-group-item list-group-item-action" id="orders-tab" data-bs-toggle="tab" role="tab" aria-controls="orders" aria-selected="false">
+                            <i class="bi bi-bag me-2"></i> Mis Compras
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido principal (área derecha) -->
+            <div class="col-lg-9">
+                <div class="tab-content" id="profileTabsContent">
+                    <!-- 1. Pestaña de Mi Perfil -->
+                    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="profile-content">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>Mi Perfil</h2>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post" class="profile-form">
+                                        {% csrf_token %}
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Nombre de usuario</label>
+                                                <input type="text" class="form-control" value="{{ request.user.username }}" readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Correo electrónico</label>
+                                                <input type="email" class="form-control" name="email" value="{{ request.user.email }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-actions">
+                                            <button type="submit" class="btn-update">Actualizar Perfil</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Pestaña de Lista de Deseos -->
+                    <div class="tab-pane fade" id="wishlist" role="tabpanel" aria-labelledby="wishlist-tab">
+                        <div class="profile-content">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>Mi Lista de Deseos</h2>
+                                </div>
+                                <div class="card-body">
+                                    {% if lista_deseos %}
+                                        <div class="row">
+                                            {% for item in lista_deseos %}
+                                                <div class="col-md-6 col-lg-4 mb-4">
+                                                    <div class="card h-100">
+                                                        {% if item.producto.imagen %}
+                                                            <img src="{{ item.producto.imagen.url }}" class="card-img-top" alt="{{ item.producto.nombre }}">
+                                                        {% else %}
+                                                            <div class="card-img-top bg-light text-center p-5">Sin imagen</div>
+                                                        {% endif %}
+                                                        
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">{{ item.producto.nombre }}</h5>
+                                                            <p class="card-text">{{ item.producto.descripcion|truncatechars:100 }}</p>
+                                                            <p class="card-text text-primary">${{ item.producto.precio }}</p>
+                                                            
+                                                            <div class="d-flex justify-content-between">
+                                                                <a href="{% url 'vetweb:carrito_agregar' item.producto.id %}" class="btn-update btn-sm">
+                                                                    <i class="bi bi-cart-plus"></i> Agregar al carrito
+                                                                </a>
+                                                                <form method="post" action="{% url 'vetweb:quitar_de_deseos' item.producto.id %}">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="btn-danger btn-sm">
+                                                                        <i class="bi bi-heart-break"></i> Quitar
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-info">
+                                            <p>No tienes productos en tu lista de deseos.</p>
+                                            <a href="{% url 'vetweb:productos' %}" class="btn-update mt-2">Ver productos</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Pestaña de Mis Compras (Historial) -->
+                    <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                        <div class="profile-content">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>Historial de Compras</h2>
+                                </div>
+                                <div class="card-body">
+                                    {% if ordenes %}
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Orden #</th>
+                                                        <th>Fecha</th>
+                                                        <th>Estado</th>
+                                                        <th>Total</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for orden in ordenes %}
+                                                        <tr>
+                                                            <td>{{ orden.id }}</td>
+                                                            <td>{{ orden.created_at|date:"d/m/Y H:i" }}</td>
+                                                            <td>
+                                                                <span class="badge {% if orden.estado == 'completado' %}bg-success{% elif orden.estado == 'pendiente' %}bg-warning{% else %}bg-info{% endif %}">
+                                                                    {{ orden.get_estado_display }}
+                                                                </span>
+                                                            </td>
+                                                            <td>${{ orden.total }}</td>
+                                                            <td>
+                                                                <a href="#" class="btn-update btn-sm">Ver detalles</a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-info">No tienes compras realizadas aún.</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos actuales (mantenlos) */
+.page-content {
+    margin-top: 120px !important;
+    background: #f8f9fa;
+    min-height: calc(100vh - 196px);
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.perfil-sidebar {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.profile-image {
+    width: 80px;
+    height: 80px;
+    background: rgba(17, 127, 239, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.profile-image i {
+    font-size: 40px;
+    color: var(--flebo-blue);
+}
+
+.profile-content {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.card {
+    border: none;
+}
+
+.card-header {
+    background: white;
+    padding: 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.card-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.form-control {
+    border: 1px solid rgba(17, 127, 239, 0.2);
+    padding: 10px;
+}
+
+.form-control:focus {
+    border-color: rgba(17, 127, 239, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(17, 127, 239, 0.1);
+}
+
+.form-actions {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.btn-update {
+    padding: 10px 20px;
+    border: 1px solid rgba(17, 127, 239, 0.3);
+    background: transparent;
+    color: var(--flebo-blue);
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.btn-update:hover {
+    background: rgba(17, 127, 239, 0.1);
+}
+
+.btn-danger {
+    padding: 10px 20px;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    background: transparent;
+    color: #dc3545;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.btn-danger:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 0.875rem;
+}
+
+/* Estilos adicionales para las pestañas */
+.nav-tabs .list-group-item.active {
+    background-color: rgba(17, 127, 239, 0.1);
+    color: #117fef;
+    border-color: rgba(17, 127, 239, 0.3);
+}
+
+.badge {
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+}
+
+.bg-success {
+    background-color: #28a745 !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.bg-info {
+    background-color: #17a2b8 !important;
+    color: #fff !important;
+}
+
+@media (max-width: 768px) {
+    .form-actions {
+        text-align: center;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Activar las pestañas de Bootstrap
+    const triggerTabList = [].slice.call(document.querySelectorAll('#profileTabs a'));
+    triggerTabList.forEach(function(triggerEl) {
+        triggerEl.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // Eliminar clases active de todas las pestañas
+            triggerTabList.forEach(tab => tab.classList.remove('active'));
+            
+            // Agregar clase active a la pestaña seleccionada
+            this.classList.add('active');
+            
+            // Obtener el target
+            const target = document.querySelector(this.getAttribute('href'));
+            
+            // Ocultar todos los contenidos de pestañas
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+            
+            // Mostrar el contenido seleccionado
+            target.classList.add('show', 'active');
+        });
+    });
+});
+</script>
+{% endblock %}

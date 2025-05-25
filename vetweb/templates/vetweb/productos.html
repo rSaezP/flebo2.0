@@ -59,7 +59,7 @@
       <div class="col-md-3">
         <button type="submit" class="btn btn-primary">Filtrar</button>
         {% if filtros_aplicados %}
-        <a
+        
           href="{% url 'vetweb:productos' %}"
           class="btn btn-outline-secondary ms-2"
           >Limpiar</a
@@ -92,14 +92,33 @@
             </div>
   
             <!-- Botones -->
-            <div class="d-flex gap-2">
-              <a href="{% url 'vetweb:detalle_producto' producto.id %}" class="btn-ver flex-grow-1">Ver Detalles</a>
-              <form action="{% url 'vetweb:carrito_agregar' producto.id %}" method="post" class="flex-grow-1">
+            <div class="product-actions">
+              <!-- Botón de Lista de Deseos -->
+              {% if user.is_authenticated %}
+              <form method="post" action="{% url 'vetweb:agregar_a_deseos' producto.id %}" class="wishlist-form">
                 {% csrf_token %}
-                <button type="submit" class="btn-add-to-cart">
+                <button type="submit" class="btn-wishlist" title="{% if producto.id in productos_en_deseos %}Quitar de deseos{% else %}Agregar a deseos{% endif %}">
+                  <i class="{% if producto.id in productos_en_deseos %}fas{% else %}far{% endif %} fa-heart"></i>
+                </button>
+              </form>
+              {% endif %}
+              
+              <!-- Botón Ver Detalles -->
+              <a href="{% url 'vetweb:detalle_producto' producto.id %}" class="btn-ver">Ver Detalles</a>
+              
+              <!-- Botón de Carrito -->
+              {% if user.is_authenticated %}
+              <form action="{% url 'vetweb:carrito_agregar' producto.id %}" method="post" class="cart-form">
+                {% csrf_token %}
+                <button type="submit" class="btn-add-cart">
                   <i class="bi bi-cart-plus"></i>
                 </button>
               </form>
+              {% else %}
+              <a href="{% url 'vetweb:login' %}?next={% url 'vetweb:productos' %}" class="btn-add-cart">
+                <i class="bi bi-cart-plus"></i>
+              </a>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -114,7 +133,10 @@
       </div>
       {% endfor %}
     </div>
-  </div>
+</div>
+
+<!-- Contenedor para notificaciones de toast -->
+<div class="toast-container" id="toastContainer"></div>
 
 <style>
   /* Contenedor del producto */
@@ -199,7 +221,7 @@
 
   /* Botón */
   .btn-ver {
-    width: 100%;
+    flex: 1;
     padding: 12px;
     background: transparent;
     border: 1px solid rgba(17, 127, 239, 0.3);
@@ -209,7 +231,9 @@
     text-decoration: none;
     border-radius: 6px;
     transition: all 0.3s ease;
-    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .btn-ver:hover {
@@ -237,7 +261,7 @@
     );
   }
 
-  /* Nuevos estilos para el precio y botón de carrito */
+  /* Nuevos estilos para el precio */
   .product-price {
     margin: 15px 0;
   }
@@ -248,27 +272,70 @@
     color: #117fef;
   }
 
-  .btn-add-to-cart {
-    width: 100%;
-    padding: 12px;
-    background: rgba(17, 127, 239, 0.1);
+  /* Contenedor de acciones (botones) */
+  .product-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+  }
+
+  /* Estilo para botón de wishlist */
+  .btn-wishlist {
+    background: transparent;
     border: 1px solid rgba(17, 127, 239, 0.3);
     color: rgba(17, 127, 239, 0.8);
+    width: 44px;
+    height: 44px;
     border-radius: 6px;
-    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 0;
   }
 
-  .btn-add-to-cart:hover {
-    background: rgba(17, 127, 239, 0.2);
+  .btn-wishlist:hover {
+    background: rgba(17, 127, 239, 0.1);
     border-color: rgba(17, 127, 239, 0.5);
     color: rgba(17, 127, 239, 1);
   }
 
-  .d-flex.gap-2 {
-    gap: 10px;
+  .btn-wishlist i {
+    font-size: 18px;
+  }
+
+  /* Cambiar color del corazón lleno */
+  .btn-wishlist .fas.fa-heart {
+    color: #ff3366;
+  }
+
+  /* Estilo para botón de agregar al carrito */
+  .btn-add-cart {
+    background: rgba(17, 127, 239, 0.1);
+    border: 1px solid rgba(17, 127, 239, 0.3);
+    color: rgba(17, 127, 239, 0.8);
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+  }
+
+  .btn-add-cart:hover {
+    background: rgba(17, 127, 239, 0.2);
+    border-color: rgba(17, 127, 239, 0.5);
+    color: rgba(17, 127, 239, 1);
+    text-decoration: none;
+  }
+
+  .btn-add-cart i {
+    font-size: 18px;
   }
 
   .bg-light {
@@ -279,5 +346,168 @@
   .text-center.py-5 {
     padding: 3rem 0;
   }
+
+  /* Estilos para las notificaciones toast */
+  .toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+  }
+
+  .toast {
+    background: white;
+    color: #333;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .toast.success {
+    border-left: 4px solid #28a745;
+  }
+
+  .toast.error {
+    border-left: 4px solid #dc3545;
+  }
+
+  .toast-icon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+
+  .toast-success .toast-icon {
+    color: #28a745;
+  }
+
+  .toast-error .toast-icon {
+    color: #dc3545;
+  }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Código para wishlist forms (lista de deseos)
+    document.querySelectorAll('.wishlist-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const heartIcon = form.querySelector('i.fa-heart');
+            const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'include',
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error en la respuesta');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Cambiar el ícono del corazón
+                    heartIcon.classList.toggle('far');
+                    heartIcon.classList.toggle('fas');
+                    
+                    // Mostrar notificación
+                    showToast(data.message, 'success');
+                    
+                    // Actualizar el título del botón
+                    const button = form.querySelector('button');
+                    if (heartIcon.classList.contains('fas')) {
+                        button.setAttribute('title', 'Quitar de deseos');
+                    } else {
+                        button.setAttribute('title', 'Agregar a deseos');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error al procesar la solicitud', 'error');
+            });
+        });
+    });
+    
+    // Código para cart forms (carrito)
+    document.querySelectorAll('.cart-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'include',
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error en la respuesta');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Mostrar notificación
+                    showToast('Producto agregado al carrito', 'success');
+                    
+                    // Actualizar contador del carrito si existe
+                    const cartBadge = document.querySelector('.cart-badge');
+                    if (cartBadge && data.items_count) {
+                        cartBadge.textContent = data.items_count;
+                        cartBadge.style.display = data.items_count > 0 ? 'flex' : 'none';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error al agregar al carrito', 'error');
+            });
+        });
+    });
+    
+    // Función para mostrar notificaciones toast
+    function showToast(message, type = 'success') {
+        const toastContainer = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type === 'success' ? 'toast-success' : 'toast-error'}`;
+        
+        toast.innerHTML = `
+            <span class="toast-icon">
+                <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-exclamation-circle'}"></i>
+            </span>
+            <div class="toast-content">${message}</div>
+        `;
+        
+        toastContainer.appendChild(toast);
+        
+        // Mostrar toast con animación
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+        
+        // Ocultar y eliminar después de 3 segundos
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove(); 
+            }, 300);
+        }, 3000);
+    }
+});
+</script>
 {% endblock %}

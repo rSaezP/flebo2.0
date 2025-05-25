@@ -93,5 +93,18 @@ class OrdenItem(models.Model):
         return f'{self.cantidad} x {self.producto.nombre}'
     
     def get_subtotal(self):
-        return self.precio_unitario * self.cantidad        
+        return self.precio_unitario * self.cantidad 
+class ListaDeseos(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    fecha_agregado = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'producto']  # Evita duplicados
+        verbose_name = "Lista de Deseos"
+        verbose_name_plural = "Lista de Deseos"
+
+    def __str__(self):
+        return f'{self.user.username} - {self.producto.nombre}'    
         
+       
