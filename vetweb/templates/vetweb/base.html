@@ -66,27 +66,33 @@
               <i class="bi bi-person-circle"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              <li><a class="dropdown-item" href="{% url 'vetweb:profile' %}">Mi Perfil</a></li>
-              <li><a class="dropdown-item" href="{% url 'vetweb:lista_deseos_view' %}">Lista de Deseos</a></li>
-              <li><a class="dropdown-item" href="{% url 'vetweb:historial_compras' %}">Mis Compras</a></li>
               {% if user.is_staff or user.userprofile.role == 'ADMIN' %}
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="{% url 'vetweb:admin_dashboard' %}">Panel Admin</a></li>
+                <!-- Menú para ADMINISTRADORES -->
+                <li><a class="dropdown-item" href="{% url 'vetweb:admin_dashboard' %}">Panel Admin</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'vetweb:logout' %}">Cerrar Sesión</a></li>
+              {% else %}
+                <!-- Menú para CLIENTES -->
+                <li><a class="dropdown-item" href="{% url 'vetweb:profile' %}">Mi Perfil</a></li>
+                <li><a class="dropdown-item" href="{% url 'vetweb:lista_deseos_view' %}">Lista de Deseos</a></li>
+                <li><a class="dropdown-item" href="{% url 'vetweb:historial_compras' %}">Mis Compras</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'vetweb:logout' %}">Cerrar Sesión</a></li>
               {% endif %}
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="{% url 'vetweb:logout' %}">Cerrar Sesión</a></li>
             </ul>
           </div>
-          <a href="{% url 'vetweb:carrito_ver' %}" class="nav-icon">
-            <i class="bi bi-cart3"></i>
-            {% if user.carrito.items.count > 0 %}
-            <span class="cart-badge">{{ user.carrito.items.count }}</span>
-            {% endif %}
-          </a>
+          
+          <!-- Carrito solo para CLIENTES autenticados -->
+          {% if not user.is_staff and user.userprofile.role != 'ADMIN' %}
+            <a href="{% url 'vetweb:carrito_ver' %}" class="nav-icon">
+              <i class="bi bi-cart3"></i>
+              {% if user.carrito.items.count > 0 %}
+              <span class="cart-badge">{{ user.carrito.items.count }}</span>
+              {% endif %}
+            </a>
+          {% endif %}
         {% else %}
-          <a href="{% url 'vetweb:carrito_ver' %}" class="nav-icon">
-            <i class="bi bi-cart3"></i>
-          </a>
+          <!-- Para usuarios NO autenticados - solo login -->
           <a href="{% url 'vetweb:login' %}" class="nav-icon">
             <i class="bi bi-person-circle"></i>
           </a>

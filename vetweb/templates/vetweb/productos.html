@@ -91,33 +91,38 @@
               <span class="price">${{ producto.precio|intcomma }}</span>
             </div>
   
-            <!-- Botones -->
+            <!-- Botones según el tipo de usuario -->
             <div class="product-actions">
-              <!-- Botón de Lista de Deseos -->
-              {% if user.is_authenticated %}
-              <form method="post" action="{% url 'vetweb:agregar_a_deseos' producto.id %}" class="wishlist-form">
-                {% csrf_token %}
-                <button type="submit" class="btn-wishlist" title="{% if producto.id in productos_en_deseos %}Quitar de deseos{% else %}Agregar a deseos{% endif %}">
-                  <i class="{% if producto.id in productos_en_deseos %}fas{% else %}far{% endif %} fa-heart"></i>
-                </button>
-              </form>
-              {% endif %}
+              {% if user.is_authenticated and not user.is_staff and user.userprofile.role != 'ADMIN' %}
+                <!-- PARA CLIENTES AUTENTICADOS: Todos los botones -->
+                
+                <!-- Botón de Lista de Deseos -->
+                <form method="post" action="{% url 'vetweb:agregar_a_deseos' producto.id %}" class="wishlist-form">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-wishlist" title="{% if producto.id in productos_en_deseos %}Quitar de deseos{% else %}Agregar a deseos{% endif %}">
+                    <i class="{% if producto.id in productos_en_deseos %}fas{% else %}far{% endif %} fa-heart"></i>
+                  </button>
+                </form>
+                
+                <!-- Botón Ver Detalles -->
+                <a href="{% url 'vetweb:detalle_producto' producto.id %}" class="btn-ver">Ver Detalles</a>
+                
+                <!-- Botón de Carrito -->
+                <form action="{% url 'vetweb:carrito_agregar' producto.id %}" method="post" class="cart-form">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-add-cart">
+                    <i class="bi bi-cart-plus"></i>
+                  </button>
+                </form>
               
-              <!-- Botón Ver Detalles -->
-              <a href="{% url 'vetweb:detalle_producto' producto.id %}" class="btn-ver">Ver Detalles</a>
+              {% elif user.is_authenticated and user.is_staff or user.userprofile.role == 'ADMIN' %}
+                <!-- PARA ADMINISTRADORES: Solo ver detalles -->
+                <a href="{% url 'vetweb:detalle_producto' producto.id %}" class="btn-ver btn-full-width">Ver Detalles</a>
               
-              <!-- Botón de Carrito -->
-              {% if user.is_authenticated %}
-              <form action="{% url 'vetweb:carrito_agregar' producto.id %}" method="post" class="cart-form">
-                {% csrf_token %}
-                <button type="submit" class="btn-add-cart">
-                  <i class="bi bi-cart-plus"></i>
-                </button>
-              </form>
               {% else %}
-              <a href="{% url 'vetweb:login' %}?next={% url 'vetweb:productos' %}" class="btn-add-cart">
-                <i class="bi bi-cart-plus"></i>
-              </a>
+                <!-- PARA USUARIOS NO AUTENTICADOS: Solo ver detalles -->
+                <a href="{% url 'vetweb:detalle_producto' producto.id %}" class="btn-ver btn-full-width">Ver Detalles</a>
+              
               {% endif %}
             </div>
           </div>
@@ -241,6 +246,11 @@
     border-color: rgba(17, 127, 239, 0.5);
     color: rgba(17, 127, 239, 1);
     text-decoration: none;
+  }
+
+  /* Botón de ancho completo para usuarios no autenticados y administradores */
+  .btn-full-width {
+    width: 100%;
   }
 
   /* Hero Section */
@@ -398,7 +408,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Código para wishlist forms (lista de deseos)
+    // Código para wishlist forms (lista de deseos) - Solo para clientes autenticados
     document.querySelectorAll('.wishlist-form').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -442,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Código para cart forms (carrito)
+    // Código para cart forms (carrito) - Solo para clientes autenticados
     document.querySelectorAll('.cart-form').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -506,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 toast.remove(); 
             }, 300);
-        }, 3000);
+        }, 300);
     }
 });
 </script>
