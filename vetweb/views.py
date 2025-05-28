@@ -71,6 +71,10 @@ def lista_productos(request):
         'filtros_aplicados': any([categoria_id, min_precio, max_precio, busqueda])
     }
     return render(request, 'vetweb/productos.html', context)
+
+def obtener_carrito_de_usuario(usuario):
+    carrito, creado = Carrito.objects.get_or_create(user=usuario)
+    return carrito
     
 def quienes_somos(request):
     return render(request, 'vetweb/quienes_somos.html') 
@@ -215,9 +219,9 @@ def carrito_ver(request):
     carrito, created = Carrito.objects.get_or_create(user=request.user)
     
     # Calculamos los valores directamente en la vista
-    subtotal = int(carrito.get_total())
-    iva = int(subtotal * 0.19)  # 19% de IVA
-    total = int(subtotal * 1.19)
+    subtotal = carrito.get_subtotal
+    iva = carrito.get_iva  # 19% de IVA
+    total = carrito.get_total
     
     context = {
         'carrito': carrito,
@@ -460,3 +464,73 @@ def admin_producto_eliminar(request, producto_id):
     except Exception as e:
         messages.error(request, f'Error al eliminar el producto: {str(e)}')
     return redirect('vetweb:admin_productos')
+
+@login_required
+def checkout(request):
+    carrito = obtener_carrito_de_usuario(request.user)
+    
+    # Validar si el carrito está vacío
+    if not carrito.items.exists():
+        return redirect('vetweb:carrito_ver')  # Redirige si no hay items
+    
+    # Calcular totales (como ya lo haces en carrito_ver)
+    subtotal = carrito.get_subtotal()
+    iva = carrito.get_iva()
+    total = carrito.get_total()
+    
+    context = {
+        'carrito': carrito,
+        'subtotal': subtotal,
+        'iva': iva,
+        'total': total,
+        # Agrega más datos si es necesario (ej: direcciones de envío)
+    }
+    return render(request, 'vetweb/cliente/checkout.html', context)
+
+@login_required
+def crear_orden(request):
+    if request.method == 'POST':
+        try:
+            carrito = obtener_carrito_de_usuario(request.user)
+            
+            if not carrito.items.exists():
+                messages.error(request, 'Tu carrito está vacío')
+                return redirect('vetweb:carrito_ver')
+            
+            # Calcular total (por si acaso no está cacheado)
+            total = carrito.get_total()
+            
+            # Crear la orden
+            orden = Orden.objects.create(
+                user=request.user, 
+                total=total,
+                status='PENDING'  # Asegurar estado inicial
+            )
+            
+            # Crear items de la orden
+            for item in carrito.items.all():
+                OrdenItem.objects.create(
+                    orden=orden,
+                    producto=item.producto,
+                    cantidad=item.cantidad,
+                    precio_unitario=item.producto.precio  # Usar precio_unitario en lugar de subtotal
+                )
+            
+            # Limpiar el carrito
+            carrito.items.all().delete()
+            
+            # Redirigir a confirmación de esta orden específica
+            return redirect('vetweb:confirmacion_orden', orden_id=orden.id)
+            
+        except Exception as e:
+            # logger.error(f"Error al crear orden: {str(e)}")
+            messages.error(request, 'Ocurrió un error al procesar tu orden')
+            return redirect('vetweb:carrito_ver')
+    
+    # Si no es POST, redirigir al carrito
+    return redirect('vetweb:carrito_ver')
+
+@login_required
+def confirmacion_orden(request, orden_id):
+    orden = get_object_or_404(Orden, id=orden_id, user=request.user)
+    return render(request, 'vetweb/cliente/confirmacion_orden.html', {'orden': orden})

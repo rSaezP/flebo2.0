@@ -104,7 +104,10 @@
               <strong>Total</strong>
               <strong>${{ total|intcomma }}</strong>
             </div>
-            <button class="contact-button w-100">Proceder al Pago</button>
+            <form method="post" action="{% url 'vetweb:checkout' %}">
+            {% csrf_token %}
+            <button type="submit" class="contact-button w-100">Proceder al Pago</button>
+            </form>
           </div>
         </div>
       </div>

@@ -1,5 +1,28 @@
+# Django
 __pycache__/
-*.pyc
-myvenv/
+*.py[cod]
 db.sqlite3
+db.sqlite3-journal
 media/
+staticfiles/
+
+# Entornos virtuales
+myvenv/
+venv/
+env/
+.venv/
+
+# IDE/Editores
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Logs y caché
+*.log
+*.pot
+*.pyc

@@ -17,6 +17,9 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile'),
     path('producto/<int:producto_id>/', views.detalle_producto, name='detalle_producto'),
     path('download/pdf/<int:producto_id>/', views.download_pdf, name='download_pdf'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('orden/crear/', views.crear_orden, name='crear_orden'),
+    path('orden/confirmacion/<int:orden_id>/', views.confirmacion_orden, name='confirmacion_orden'),
     
 # URLs para reseteo de contraseña con tus nombres de archivo
     # Password Reset URLs
@@ -42,7 +45,7 @@ urlpatterns = [
     ),
     name='password_reset_confirm'),      
 
-path('password_reset/complete/',  # Cambié 'reset/done' por 'password_reset/complete'          
+    path('password_reset/complete/',  # Cambié 'reset/done' por 'password_reset/complete'          
     auth_views.PasswordResetCompleteView.as_view(             
         template_name='vetweb/auth/password_reset_complete.html'         
     ),         

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import math
 
 def get_pdf_name(instance, filename):
     return f'pdfs/{filename}' 
@@ -46,16 +47,24 @@ def save_user_profile(sender, instance, **kwargs):
         UserProfile.objects.create(user=instance, role='CLIENT')
         
 class Carrito(models.Model):
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return f'Carrito de {self.user.username}'
     
+    def get_subtotal(self):
+        """Retorna la suma de los items SIN IVA (en CLP, sin decimales)"""
+        subtotal = sum(item.get_subtotal() for item in self.items.all())
+        return math.ceil(subtotal)  # Redondeo comercial chileno
+    
+    def get_iva(self):
+        """Calcula el IVA (19%) sobre el subtotal (en CLP, sin decimales)"""
+        return math.ceil(self.get_subtotal() * 0.19)
+    
     def get_total(self):
-        items = self.items.all()
-        return sum(item.get_subtotal() for item in items)
+        """Retorna subtotal + IVA (ya redondeados)"""
+        return self.get_subtotal() + self.get_iva()
 
 class CarritoItem(models.Model):
     carrito = models.ForeignKey(Carrito, related_name='items', on_delete=models.CASCADE)
