@@ -121,13 +121,13 @@ USE_TZ = True
 
 
 # Configuración de Email con Gmail
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'contactoflebovet@gmail.com'  # Reemplaza con tu correo
-EMAIL_HOST_PASSWORD = 'flebovettt_1'  # Aquí irá la contraseña de aplicación
-
+EMAIL_HOST_USER = 'contactoflebovet@gmail.com'
+EMAIL_HOST_PASSWORD = 'demd phld awxk divi'  # Contraseña de aplicación que funciona
+DEFAULT_FROM_EMAIL = 'contactoflebovet@gmail.com'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 # Configuración de archivos estáticos

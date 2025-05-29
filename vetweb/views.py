@@ -155,38 +155,55 @@ def registro(request):
 def logout_view(request):
     logout(request)
     return redirect('vetweb:index')
-
-
-
-
-def detalle_producto(request, producto_id):
-    producto = get_object_or_404(Producto, id=producto_id)
-    return render(request, 'vetweb/detalle_producto.html', {
-        'producto': producto,
-        'MEDIA_URL': settings.MEDIA_URL
-    })
-    
-
-
-def download_pdf(request , producto_id):
+def download_pdf(request, producto_id):
     try:
         producto = get_object_or_404(Producto, id=producto_id)
         
-        if producto.pdf:
-            file_path = producto.pdf.path
-            
-            # Verifica si el archivo existe
-            if os.path.exists(file_path):
-                response = FileResponse(open(file_path, 'rb'))
-                response['Content-Type'] = 'application/pdf'
-                response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
-                return response
-            else:
-                raise Http404("Archivo no encontrado")
-        else:
-            raise Http404("El PDF no está disponible para este producto")
+        if not producto.pdf:
+            raise Http404("PDF no disponible para este producto")
+        
+        # Verificar que el archivo existe físicamente
+        if not os.path.exists(producto.pdf.path):
+            raise Http404("Archivo PDF no encontrado en el servidor")
+        
+        # Obtener el nombre del archivo
+        filename = os.path.basename(producto.pdf.name)
+        
+        # Crear respuesta con el archivo
+        response = FileResponse(
+            open(producto.pdf.path, 'rb'),
+            content_type='application/pdf'
+        )
+        
+        # Configurar headers para descarga
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        
+        return response
+        
     except Exception as e:
         raise Http404(f"Error al descargar el archivo: {str(e)}")
+
+def detalle_producto(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    
+    # Verificar si el producto está en la lista de deseos del usuario
+    en_lista_deseos = False
+    if request.user.is_authenticated:
+        en_lista_deseos = ListaDeseos.objects.filter(
+            user=request.user, 
+            producto=producto
+        ).exists()
+    
+    context = {
+        'producto': producto,
+        'en_lista_deseos': en_lista_deseos,
+    }
+    
+    return render(request, 'vetweb/detalle_producto.html', context)
+
+
+
+
 def product_manager_required(function):
     @wraps(function)
     def wrap(request, *args, **kwargs):
