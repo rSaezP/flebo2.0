@@ -2,6 +2,15 @@
 {% load static %}
 
 {% block content %}
+<script>
+// Limpiar mensajes antiguos al cargar la página
+window.onload = function() {
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+}
+</script>
+
 <!-- Hero Section -->
 <div class="hero-slider contact-page">
     <div class="carousel-inner">
@@ -10,7 +19,7 @@
             <div class="carousel-caption">
                 <div class="container">
                     <div class="caption-content text-start">
-                        <h1>Contáctanos</h1>
+                        <h1>CONTÁCTO</h1>
                         <p>Estamos aquí para atender tus consultas</p>
                     </div>
                 </div>
@@ -26,22 +35,53 @@
             <div class="col-md-8">
                 <div class="contact-form-box">
                     <h2 class="text-center mb-4">¿Necesitas más Información?</h2>
-                    <form class="contact-form">
+
+                    <!-- Mensajes de éxito/error -->
+                    {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} alert-dismissible fade show mb-4">
+                            <div class="d-flex align-items-center">
+                                {% if message.tags == 'success' %}
+                                    <i class="fas fa-check-circle me-2"></i>
+                                {% endif %}
+                                <div>
+                                    <strong>{{ message }}</strong>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                    <script>
+                        // Auto-dismiss alerts after 5 seconds
+                        setTimeout(function() {
+                            document.querySelectorAll('.alert').forEach(function(alert) {
+                                bootstrap.Alert.getOrCreateInstance(alert).close();
+                            });
+                        }, 10000);  // Aumentado a 5 segundos para dar más tiempo de lectura
+                    </script>
+                {% endif %}
+
+                    <form class="contact-form" method="post">
+                        {% csrf_token %}
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="nombre" placeholder="Nombre y Apellido">
+                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre y Apellido" required>
                             <label for="nombre">Nombre y Apellido</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="email" placeholder="E-mail">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="E-mail" required>
                             <label for="email">E-mail</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="asunto" placeholder="Asunto">
+                            <input type="text" class="form-control" id="asunto" name="asunto" placeholder="Asunto" required>
                             <label for="asunto">Asunto</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <textarea class="form-control" id="mensaje" style="height: 100px" placeholder="Mensaje"></textarea>
+                            <textarea class="form-control" id="mensaje" name="mensaje" style="height: 100px" placeholder="Mensaje" required></textarea>
                             <label for="mensaje">Mensaje</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Número de teléfono" required>
+                            <label for="telefono">Número de teléfono</label>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="contact-button">
@@ -54,4 +94,127 @@
         </div>
     </div>
 </section>
+
+<style>
+/* Estilos específicos para la página de contacto */
+.hero-slider.contact-page {
+    position: relative;
+    z-index: 1;
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-top: -89px !important;
+    height: 700px !important;
+    width: 100%;
+    overflow: hidden;
+}
+
+.hero-slider.contact-page .carousel-inner {
+    height: 100%;
+}
+
+.hero-slider.contact-page .carousel-item {
+    height: 100%;
+}
+
+.hero-slider.contact-page img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+    margin: 0;
+    padding: 0
+}
+
+.hero-slider.contact-page .carousel-caption {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2rem;
+    margin: 0;
+    border-radius: 0;
+}
+
+.hero-slider.contact-page .caption-content {
+    z-index: 3;
+    position: relative;
+    max-width: 800px;
+    text-align: left;
+}
+
+.hero-slider.contact-page h1 {
+    color: white !important;
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-slider.contact-page p {
+    color: white !important;
+    font-size: 1.5rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Fix para mensajes */
+.alert {
+    margin-bottom: 1rem !important;
+}
+
+.alert-dismissible {
+    position: relative;
+}
+
+.btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1.25rem;
+}
+
+/* Estilos para los mensajes de alerta */
+.alert-success {
+    background: rgba(17, 127, 239, 0.1);
+    border: 1px solid rgba(17, 127, 239, 0.3);
+    color: #117fef;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(17, 127, 239, 0.1);
+    position: relative;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.alert-dismissible .btn-close {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    padding: 0.5rem;
+    color: #117fef;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.alert-dismissible .btn-close:hover {
+    opacity: 1;
+}
+</style>
 {% endblock %}

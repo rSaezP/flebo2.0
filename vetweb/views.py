@@ -23,6 +23,11 @@ from .decorators import admin_required
 from django.db.models import Count
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.core.mail import send_mail 
+from django.conf import settings
+
 
 
 
@@ -80,6 +85,40 @@ def quienes_somos(request):
     return render(request, 'vetweb/quienes_somos.html') 
 
 def contacto(request):
+    if request.method == 'POST':
+        try:
+            nombre = request.POST.get('nombre')
+            email = request.POST.get('email')
+            asunto = request.POST.get('asunto')
+            telefono = request.POST.get('telefono')  # Nuevo campo
+            mensaje = request.POST.get('mensaje')
+           
+            
+            mensaje_completo = f"""
+            Nuevo mensaje de contacto:
+            
+            Nombre: {nombre}
+            Email: {email}
+            Asunto: {asunto}
+            Teléfono: {telefono}
+            Mensaje: {mensaje}
+            
+            """
+            
+            send_mail(
+                subject=f'Nuevo contacto: {asunto}',
+                message=mensaje_completo,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[settings.EMAIL_HOST_USER],
+                fail_silently=False,
+            )
+            
+            messages.success(request, '¡Gracias por contactarnos! Hemos recibido tu mensaje. Nuestro equipo se pondrá en contacto contigo lo antes posible.')
+            return HttpResponseRedirect(reverse('vetweb:contacto') + '#')  # Agregamos # al final
+            
+        except Exception as e:
+            messages.error(request, 'Error al enviar el mensaje. Por favor, intenta nuevamente.')
+    
     return render(request, 'vetweb/contacto.html')
 
 def login_admin(request):
