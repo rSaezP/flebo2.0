@@ -1,106 +1,427 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Laboratorio Veterinario{% endblock %}</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css"
-    />
-    <link rel="stylesheet" href="{% static 'vetweb/css/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'vetweb/css/new_style.css' %}" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FLEBOVET - Equipamiento y Diagnóstico Veterinario{% endblock %}</title>
+    <meta name="description" content="FLEBOVET ofrece equipos de diagnóstico veterinario de alta calidad para clínicas y hospitales. Soluciones precisas y confiables para el cuidado animal.">
+    <link rel="canonical" href="https://www.flebo.cl{{ request.path }}" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.flebo.cl/">
+    <meta property="og:title" content="FLEBOVET - Equipamiento y Diagnóstico Veterinario">
+    <meta property="og:description" content="FLEBOVET ofrece equipos de diagnóstico veterinario de alta calidad para clínicas y hospitales. Soluciones precisas y confiables para el cuidado animal.">
+    <meta property="og:image" content="https://www.flebo.cl/static/vetweb/img/logo.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.flebo.cl/">
+    <meta property="twitter:title" content="FLEBOVET - Equipamiento y Diagnóstico Veterinario">
+    <meta property="twitter:description" content="FLEBOVET ofrece equipos de diagnóstico veterinario de alta calidad para clínicas y hospitales. Soluciones precisas y confiables para el cuidado animal.">
+    <meta property="twitter:image" content="https://www.flebo.cl/static/vetweb/img/logo.png">
+    
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos externos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="{% static 'vetweb/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'vetweb/css/new_style.css' %}">
+    
     {% block extra_css %}{% endblock %}
-  </head>
-  <body>
-   <!-- Navegación Principal -->
-<nav class="navbar navbar-expand-lg">
-  <div class="container">
-    <a class="navbar-brand" href="{% url 'vetweb:index' %}">
-      <img
-        src="{% static 'vetweb/img/logo_flebo.png' %}"
-        alt="FleboVet"
-        class="logo"
-      />
-    </a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarMain"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarMain">
-      <ul class="navbar-nav mx-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'vetweb:index' %}">INICIO</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'vetweb:productos' %}">PRODUCTOS</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'vetweb:quienes_somos' %}">QUIÉNES SOMOS</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'vetweb:contacto' %}">CONTACTO</a>
-        </li>
-      </ul>
-      <div class="header-icons">
-        {% if user.is_authenticated %}
-          <div class="dropdown">
-            <a href="#" class="nav-icon dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle"></i>
+    
+    <style>
+        /* Fuente global Raleway */
+        body, h1, h2, h3, h4, h5, h6, p, a, button, input, select, textarea {
+            font-family: 'Raleway', sans-serif !important;
+        }
+
+        /* Sección de registro glass effect */
+        .glass-register {
+            font-family: 'Raleway', sans-serif !important;
+            padding: 80px 0;
+            position: relative;
+            background: linear-gradient(120deg, #f0f7ff, #e1eeff);
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 30px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            box-shadow:
+                0 8px 32px rgba(18, 68, 197, 0.08),
+                inset 0 0 32px rgba(255, 255, 255, 0.2);
+        }
+
+        .content-side {
+            padding: 60px 40px;
+            position: relative;
+            background: linear-gradient(
+                120deg,
+                rgba(18, 68, 197, 0.95),
+                rgba(18, 68, 197, 0.85)
+            );
+            display: flex;
+            align-items: center;
+        }
+
+        .modern-heading {
+            font-family: 'Raleway', sans-serif !important;
+            font-size: 2.8rem;
+            line-height: 1.2;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .accent-text {
+            display: block;
+            background: linear-gradient(to right, #ffffff, #e1eeff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-style: normal;
+        }
+
+        .glass-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+            background: radial-gradient(
+                circle,
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0) 70%
+            );
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -100px;
+            background: radial-gradient(
+                circle,
+                rgba(255, 255, 255, 0.15) 0%,
+                rgba(255, 255, 255, 0) 70%
+            );
+            animation: float 6s infinite ease-in-out reverse;
+        }
+
+        .action-side {
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glass-cta {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 30px 20px;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .glass-cta h3 {
+            font-family: 'Raleway', sans-serif !important;
+            color: #1244C5;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .glass-btn {
+            position: relative;
+            display: inline-flex;
+            padding: 14px 32px;
+            background: #1244C5;
+            color: white;
+            font-family: 'Raleway', sans-serif !important;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(18, 68, 197, 0.2);
+        }
+
+        .glass-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(18, 68, 197, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-glow {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle,
+                rgba(255, 255, 255, 0.3) 0%,
+                transparent 50%
+            );
+            transform: translate(-100%, -100%);
+            transition: all 0.5s ease;
+        }
+
+        .glass-btn:hover .btn-glow {
+            transform: translate(0, 0);
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-20px) scale(1.05);
+            }
+        }
+
+        /* Navbar mejorado */
+        .navbar {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98) !important;
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Badge del carrito mejorado */
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Estilos específicos para el menú móvil */
+        @media (max-width: 768px) {
+            .glass-card {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .modern-heading {
+                font-size: 2.2rem;
+            }
+
+            .content-side {
+                padding: 40px 30px;
+            }
+
+            .action-side {
+                padding: 30px;
+            }
+
+            /* Mejora del menú responsive */
+            .navbar-collapse.show,
+            .navbar-collapse.collapsing {
+                display: block !important;
+                position: absolute !important;
+                top: 100% !important;
+                left: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                background-color: white !important;
+                z-index: 1000 !important;
+                padding: 10px 20px !important;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+                border-radius: 0 0 15px 15px !important;
+            }
+
+            .navbar-collapse.show .navbar-nav,
+            .navbar-collapse.collapsing .navbar-nav {
+                margin-top: 10px !important;
+                margin-bottom: 10px !important;
+            }
+
+            .navbar-collapse.show .nav-item,
+            .navbar-collapse.collapsing .nav-item {
+                display: block !important;
+                margin-bottom: 5px !important;
+            }
+
+            .navbar-collapse.show .nav-link,
+            .navbar-collapse.collapsing .nav-link {
+                color: #1244C5 !important;
+                display: block !important;
+                padding: 8px 0 !important;
+                font-weight: 500 !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+
+            .navbar-collapse.show .dropdown-toggle,
+            .navbar-collapse.collapsing .dropdown-toggle {
+                display: block !important;
+                color: #1244C5 !important;
+            }
+
+            .navbar-collapse.show .dropdown-menu,
+            .navbar-collapse.collapsing .dropdown-menu {
+                display: block !important;
+                background-color: #f8f9fa !important;
+                border-radius: 8px !important;
+                margin-top: 5px !important;
+                margin-bottom: 10px !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .glass-register {
+                padding: 40px 0;
+            }
+            
+            .modern-heading {
+                font-size: 1.8rem;
+            }
+            
+            .glass-cta h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navegación Principal -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'vetweb:index' %}">
+                <img src="{% static 'vetweb/img/logo_flebo.png' %}" alt="FleboVet" class="logo">
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              {% if user.is_staff or user.userprofile.role == 'ADMIN' %}
-                <!-- Menú para ADMINISTRADORES -->
-                <li><a class="dropdown-item" href="{% url 'vetweb:admin_dashboard' %}">Panel Admin</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'vetweb:logout' %}">Cerrar Sesión</a></li>
-              {% else %}
-                <!-- Menú para CLIENTES -->
-                <li><a class="dropdown-item" href="{% url 'vetweb:profile' %}">Mi Perfil</a></li>
-                <li><a class="dropdown-item" href="{% url 'vetweb:lista_deseos_view' %}">Lista de Deseos</a></li>
-                <li><a class="dropdown-item" href="{% url 'vetweb:historial_compras' %}">Mis Compras</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'vetweb:logout' %}">Cerrar Sesión</a></li>
-              {% endif %}
-            </ul>
-          </div>
-          
-          <!-- Carrito solo para CLIENTES autenticados -->
-          {% if not user.is_staff and user.userprofile.role != 'ADMIN' %}
-            <a href="{% url 'vetweb:carrito_ver' %}" class="nav-icon">
-              <i class="bi bi-cart3"></i>
-              {% if user.carrito.items.count > 0 %}
-              <span class="cart-badge">{{ user.carrito.items.count }}</span>
-              {% endif %}
-            </a>
-          {% endif %}
-        {% else %}
-          <!-- Para usuarios NO autenticados - solo login -->
-          <a href="{% url 'vetweb:login' %}" class="nav-icon">
-            <i class="bi bi-person-circle"></i>
-          </a>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-</nav>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vetweb:index' %}">INICIO</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vetweb:productos' %}">PRODUCTOS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vetweb:quienes_somos' %}">QUIÉNES SOMOS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vetweb:contacto' %}">CONTACTO</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vetweb:policies' %}">POLÍTICAS</a>
+                    </li>
+                </ul>
+                <div class="header-icons">
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <a href="#" class="nav-icon dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                {% if user.is_staff or user.userprofile.role == 'ADMIN' %}
+                                    <!-- Menú para ADMINISTRADORES -->
+                                    <li><a class="dropdown-item" href="{% url 'vetweb:admin_dashboard' %}">
+                                        <i class="bi bi-speedometer2 me-2"></i>Panel de Administración
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'vetweb:logout' %}">
+                                        <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                                    </a></li>
+                                {% else %}
+                                    <!-- Menú para CLIENTES -->
+                                    <li><a class="dropdown-item" href="{% url 'vetweb:profile' %}">
+                                        <i class="bi bi-person me-2"></i>Mi Perfil
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'vetweb:lista_deseos_view' %}">
+                                        <i class="bi bi-heart me-2"></i>Lista de Deseos
+                                        {% if request.user.listadeseos_set.exists %}
+                                            <span class="badge bg-primary">{{ request.user.listadeseos_set.count }}</span>
+                                        {% endif %}
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'vetweb:historial_compras' %}">
+                                        <i class="bi bi-clock-history me-2"></i>Mis Compras
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'vetweb:logout' %}">
+                                        <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                                    </a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        
+                        <!-- Carrito solo para CLIENTES autenticados -->
+                        {% if not user.is_staff and user.userprofile.role != 'ADMIN' %}
+                            <a href="{% url 'vetweb:carrito_ver' %}" class="nav-icon position-relative">
+                                <i class="bi bi-cart3"></i>
+                                {% if user.carrito.items.count > 0 %}
+                                <span class="cart-badge">{{ user.carrito.items.count }}</span>
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <!-- Para usuarios NO autenticados - solo login -->
+                        <a href="{% url 'vetweb:login' %}" class="nav-icon">
+                            <i class="bi bi-person-circle"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <!-- Mensajes de notificación -->
     {% if messages %}
     <div class="container mt-3">
@@ -116,94 +437,146 @@
     <!-- Contenido Principal -->
     {% block content %}{% endblock %}
 
-    <!-- Footer -->
-    <footer class="footer-modern">
-      <div class="footer-waves">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-          <path
-            fill="#f0f7ff"
-            d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-          ></path>
-        </svg>
-      </div>
-      <div class="footer-content">
+    <!-- Sección de registro glass effect -->
+    <section class="glass-register">
         <div class="container">
-          <div class="row g-4">
-            <!-- Sobre Nosotros -->
-            <div class="col-lg-4">
-              <div class="footer-widget">
-                <h5><i class="fas fa-info-circle"></i> Sobre Nosotros</h5>
-                <p>
-                  Especialistas en equipamiento y productos para laboratorio
-                  clínico veterinario, comprometidos con la excelencia y calidad
-                  en el servicio.
-                </p>
-              </div>
+            <div class="glass-card">
+                <div class="content-side">
+                    <div>
+                        <h2 class="modern-heading">
+                            Soluciones para 
+                            <span class="accent-text">El diagnóstico</span>
+                            Veterinario
+                        </h2>
+                    </div>
+                    <div class="glass-shapes">
+                        <div class="shape shape-1"></div>
+                        <div class="shape shape-2"></div>
+                    </div>
+                </div>
+                <div class="action-side">
+                    <div class="glass-cta">
+                        <h3>Descubre nuestros productos y Regístrate</h3>
+                        <a href="{% url 'vetweb:register' %}" class="glass-btn">
+                            Crear cuenta
+                            <div class="btn-glow"></div>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <!-- Enlaces Rápidos -->
-            <div class="col-lg-4">
-              <div class="footer-widget">
-                <h5><i class="fas fa-link"></i> Enlaces Rápidos</h5>
-                <ul class="footer-links">
-                  <li>
-                    <a href="{% url 'vetweb:productos' %}"
-                      ><i class="fas fa-chevron-right"></i> Productos</a
-                    >
-                  </li>
-
-                  <li>
-                    <a href="{% url 'vetweb:contacto' %}"
-                      ><i class="fas fa-chevron-right"></i> Contacto</a
-                    >
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <!-- Contáctanos -->
-            <div class="col-lg-4">
-              <div class="footer-widget">
-                <h5><i class="fas fa-phone-alt"></i> Contáctanos</h5>
-                <ul class="contact-info">
-                  <li>
-                    <i class="fas fa-phone"></i>
-                    <a href="tel:+56933912923">+56 9 3391 2923</a>
-                  </li>
-                  <li>
-                    <i class="fas fa-envelope"></i>
-                    <a href="mailto:ventas@flebo.cl">ventas@flebo.cl</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-      <div class="footer-copyright">
-        © {% now 'Y' %} FleboVet. Todos los derechos reservados.
-      </div>
+    </section>
+
+    <!-- Footer Moderno Mejorado -->
+    <footer class="footer-modern">
+        <div class="footer-waves">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                <path fill="#f0f7ff" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
+        </div>
+        <div class="footer-content">
+            <div class="container">
+                <div class="row g-4">
+                    <!-- Sobre Nosotros -->
+                    <div class="col-lg-4">
+                        <div class="footer-widget">
+                            <h5><i class="fas fa-info-circle"></i> Sobre Nosotros</h5>
+                            <p>Especialistas en equipamiento y productos para laboratorio clínico veterinario, comprometidos con la excelencia y calidad en el servicio.</p>
+                        </div>
+                    </div>
+                    <!-- Enlaces Rápidos -->
+                    <div class="col-lg-4">
+                        <div class="footer-widget">
+                            <h5><i class="fas fa-link"></i> Enlaces Rápidos</h5>
+                            <ul class="footer-links">
+                                <li><a href="{% url 'vetweb:productos' %}"><i class="fas fa-chevron-right"></i> Productos</a></li>
+                                <li><a href="{% url 'vetweb:contacto' %}"><i class="fas fa-chevron-right"></i> Contacto</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Contáctanos -->
+                    <div class="col-lg-4">
+                        <div class="footer-widget">
+                            <h5><i class="fas fa-phone-alt"></i> Contáctanos</h5>
+                            <ul class="contact-info">
+                                <li><i class="fas fa-phone"></i> <a href="tel:+56933912923">+56 9 3391 2923</a></li>
+                                <li><i class="fas fa-envelope"></i> <a href="mailto:ventas@flebo.cl">ventas@flebo.cl</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            © {% now 'Y' %} FleboVet. Todos los derechos reservados.
+        </div>
     </footer>
 
     <!-- WhatsApp Float -->
     <a href="https://wa.me/+56933912923" class="whatsapp-float" target="_blank">
-      <i class="fab fa-whatsapp"></i>
+        <i class="fab fa-whatsapp"></i>
     </a>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const navbar = document.querySelector(".navbar");
-
-        window.addEventListener("scroll", function () {
-          if (window.scrollY > 50) {
-            navbar.classList.add("scrolled");
-          } else {
-            navbar.classList.remove("scrolled");
-          }
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.querySelector('.navbar');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            const menuButton = document.querySelector('.navbar-toggler');
+            let lastScrollTop = 0;
+        
+            // Función para manejar el scroll
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                // Añadir/quitar clase scrolled
+                if (scrollTop > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                
+                // Efecto de ocultar/mostrar según dirección del scroll
+                if (window.innerWidth > 768) {
+                    if (scrollTop > lastScrollTop && scrollTop > 100) {
+                        // Scroll hacia abajo - ocultar navbar
+                        navbar.style.transform = 'translateY(-100%)';
+                    } else {
+                        // Scroll hacia arriba - mostrar navbar
+                        navbar.style.transform = 'translateY(0)';
+                    }
+                } else {
+                    // En móviles, siempre visible
+                    navbar.style.transform = 'translateY(0)';
+                    
+                    // Cerrar el menú en móviles al hacer scroll
+                    if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                        navbarCollapse.classList.remove('show');
+                    }
+                }
+                
+                lastScrollTop = scrollTop;
+            });
+            
+            // Controlador del menú hamburguesa
+            if (menuButton && navbarCollapse) {
+                menuButton.addEventListener('click', function() {
+                    navbarCollapse.classList.toggle('show');
+                });
+                
+                // Cierra el menú al hacer clic en un enlace
+                const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        navbarCollapse.classList.remove('show');
+                    });
+                });
+            }
         });
-      });
     </script>
+
     {% block extra_js %}{% endblock %}
-  </body>
+</body>
 </html>

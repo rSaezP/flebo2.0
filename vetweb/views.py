@@ -121,6 +121,10 @@ def contacto(request):
     
     return render(request, 'vetweb/contacto.html')
 
+
+def policies_view(request):
+    return render(request, 'vetweb/policies.html')
+
 def login_admin(request):
     if request.method == 'POST':
         username = request.POST['username']

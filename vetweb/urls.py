@@ -20,6 +20,7 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     path('orden/crear/', views.crear_orden, name='crear_orden'),
     path('orden/confirmacion/<int:orden_id>/', views.confirmacion_orden, name='confirmacion_orden'),
+    path('policies/', views.policies_view, name='policies'),
     
 # URLs para reseteo de contraseña con tus nombres de archivo
     # Password Reset URLs
