@@ -1,0 +1,437 @@
+{% extends 'vetweb/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="policy-wrapper">
+    <!-- Hero Section mejorada -->
+    <section class="glass-hero" style="background-image: url('{% static 'vetweb/img/15.jpg' %}');">
+        <div class="hero-overlay"></div>
+        <div class="hero-container">
+            <h1 class="hero-title">POLITICAS FLEBOvet</h1>
+            <p class="hero-subtitle">Compromiso con la excelencia veterinaria</p>
+        </div>
+    </section>
+
+    <!-- Contenido Principal -->
+    <main class="glass-main-container">
+        <!-- Destacado de plazos integrado -->
+        <div class="plazos-container">
+            <div class="plazo-card">
+                <div class="plazo-content">
+                    <span>7</span>
+                    <p>Días para solicitud</p>
+                </div>
+            </div>
+            <div class="plazo-card">
+                <div class="plazo-content">
+                    <span>10</span>
+                    <p>Días para resolución</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección única sin tabs -->
+        <div class="content-grid">
+            <!-- Políticas de Canje -->
+            <section class="policy-section">
+                <h2 class="section-title"><i class="bi bi-arrow-repeat"></i> Políticas de Canje</h2>
+                
+                <article class="glass-card">
+                    <div class="card-header">
+                        <i class="bi bi-file-text"></i>
+                        <h3>1. Condiciones Generales</h3>
+                    </div>
+                    <ul class="card-list">
+                        <li>Aplicable para productos adquiridos directamente en FleboVet</li>
+                        <li>Presentación de comprobante de compra original</li>
+                        <li>Evaluación del estado del producto requerida</li>
+                    </ul>
+                </article>
+
+                <article class="glass-card">
+                    <div class="card-header">
+                        <i class="bi bi-calendar-check"></i>
+                        <h3>2. Elegibilidad</h3>
+                    </div>
+                    <ul class="card-list">
+                        <li>Notificación dentro de 7 días hábiles</li>
+                        <li>Productos defectuosos o no correspondientes</li>
+                        <li>Envío en empaque original</li>
+                    </ul>
+                </article>
+
+                <article class="glass-card process-card">
+                    <div class="card-header">
+                        <i class="bi bi-diagram-3"></i>
+                        <h3>Procedimiento</h3>
+                    </div>
+                    <div class="process-steps">
+                        <div class="step">
+                            <div class="step-icon">1</div>
+                            <p>Contactar al departamento</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon">2</div>
+                            <p>Completar formulario</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon">3</div>
+                            <p>Envío del producto</p>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <!-- Garantías de Calidad -->
+            <section class="policy-section">
+                <h2 class="section-title"><i class="bi bi-shield-check"></i> Garantías de Calidad</h2>
+
+                <article class="glass-card">
+                    <div class="card-header">
+                        <i class="bi bi-graph-up-arrow"></i>
+                        <h3>Resultados Precisos</h3>
+                    </div>
+                    <ul class="card-list">
+                        <li>Tecnología de última generación</li>
+                        <li>Verificación por expertos</li>
+                        <li>Protocolos estandarizados</li>
+                    </ul>
+                </article>
+
+                <article class="glass-card">
+                    <div class="card-header">
+                        <i class="bi bi-award"></i>
+                        <h3>Certificaciones</h3>
+                    </div>
+                    <div class="certification-grid">
+                        <div class="cert-item">
+                            <i class="bi bi-globe"></i>
+                            <p>Normas internacionales</p>
+                        </div>
+                        <div class="cert-item">
+                            <i class="bi bi-shield-lock"></i>
+                            <p>Procesos auditados</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Contacto Integrado -->
+                <article class="glass-card contact-card">
+                    <div class="card-header">
+                        <i class="bi bi-headset"></i>
+                        <h3>Soporte Inmediato</h3>
+                    </div>
+                    <div class="contact-info">
+                        <a href="mailto:ventas@flebo.cl" class="contact-link">
+                            <i class="bi bi-envelope"></i>
+                            ventas@flebo.cl
+                        </a>
+                        <a href="tel:+56933912923" class="contact-link">
+                            <i class="bi bi-phone"></i>
+                            +569 3391 2923
+                        </a>
+                    </div>
+                </article>
+            </section>
+        </div>
+    </main>
+</div>
+
+<style>
+/* Base mejorada */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+    --main-blue: #1244C5;
+    --glass-white: rgba(255, 255, 255, 0.15);
+}
+
+.policy-wrapper {
+    padding-top: 80px;
+    background: linear-gradient(135deg, #f0f7ff 0%, #e1eeff 100%);
+    min-height: 100vh;
+}
+
+/* Hero Section */
+.glass-hero {
+    position: relative;
+    height: 70vh;
+    min-height: 500px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('tu-imagen.jpg'); /* Solo la imagen */
+}
+.glass-hero::before {
+    content: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 68, 197, 0.1); /* Suavizado */
+    backdrop-filter: blur(0.5px); /* Blur mínimo */
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 68, 197, 0.03);  /* Overlay más transparente */
+    background: linear-gradient(to bottom, 
+    rgba(18, 68, 197, 0.1) 0%,  /* Cambiado de 0.05 a 0.1 */
+    rgba(18, 68, 197, 0.05) 100%); /* Cambiado de 0.02 a 0.05 */
+    backdrop-filter: blur(0.3px);  /* Reducido de 0.5px a 0.3px */
+}
+
+.hero-container {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 20px;
+    max-width: 90%;
+    
+}
+
+.hero-title {
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Plazos Container */
+.plazos-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: -40px auto 3rem;
+    max-width: 1000px;
+    flex-wrap: wrap;
+}
+
+.plazo-card {
+    background: var(--glass-white);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(18, 68, 197, 0.1);
+    width: 200px;
+    text-align: center;
+}
+
+.plazo-content span {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: var(--main-blue);
+    display: block;
+    line-height: 1;
+}
+
+.plazo-content p {
+    color: var(--main-blue);
+    margin: 0.5rem 0 0;
+    font-weight: 500;
+}
+
+/* Contenido Principal */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    font-family: 'Poppins', sans-serif;
+    color: var(--main-blue);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.glass-card {
+    background: var(--glass-white);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(18, 68, 197, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-header i {
+    font-size: 1.8rem;
+    color: var(--main-blue);
+}
+
+.card-header h3 {
+    color: var(--main-blue);
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.card-list {
+    padding-left: 1.5rem;
+}
+
+.card-list li {
+    color: #4a5568;
+    margin-bottom: 1rem;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.card-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 8px;
+    height: 8px;
+    background: var(--main-blue);
+    border-radius: 50%;
+}
+
+/* Proceso */
+.process-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding-top: 1rem;
+}
+
+.step {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--main-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Contacto */
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contact-link {
+    color: var(--main-blue);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.contact-link:hover {
+    transform: translateX(10px);
+}
+
+@media (max-width: 768px) {
+    .plazos-container {
+        flex-direction: column;
+        align-items: center;
+        margin-top: -20px;
+    }
+    
+    .process-steps {
+        grid-template-columns: 1fr;
+    }
+    
+    .glass-hero {
+        height: 60vh;
+        min-height: 400px;
+        background-image: 
+        linear-gradient(
+            to right,
+            rgba(18, 68, 197, 0.1) 0%,  /* 10% de opacidad */
+            rgba(18, 68, 197, 0.05) 100%  /* 5% de opacidad */
+        ),
+        url('tu-imagen.jpg');
+        
+    
+        .hero-title {
+            font-size: 2.2rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        .hero-subtitle {
+            font-size: 1.1rem !important;
+        }
+        
+    }
+}
+@media (max-width: 480px) {
+    .glass-hero {
+        height: 50vh;
+        min-height: 300px;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Efecto hover suave para tarjetas
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+});
+</script>
+{% endblock %}
