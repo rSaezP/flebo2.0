@@ -2,79 +2,328 @@
 {% load static %}
 
 {% block content %}
-<!-- Hero Section con imagen de fondo -->
-<div class="hero-slider about-page">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="{% static 'vetweb/img/201.jpg' %}" class="d-block w-100" alt="FleboVet">
-            <div class="carousel-caption">
-                <div class="container">
-                    <div class="caption-content text-start">
-                        <h1>Quiénes Somos</h1>
-                        <p>Innovación tecnológica</p>
+<div class="quienes-wrapper">
+    <!-- Hero Section -->
+    <div class="hero-slider quienes-page">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img
+                    src="{% static 'vetweb/img/201.jpg' %}"
+                    class="d-block w-100"
+                    alt="FleboVet"
+                />
+                <div class="carousel-caption">
+                    <div class="container">
+                        <div class="caption-content text-start">
+                            <h1>QUIÉNES SOMOS</h1>
+                            <p>Innovación tecnológica en diagnóstico veterinario</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Sección Introducción -->
+    <section class="about-intro py-5 scroll-effect">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="about-card">
+                        <p class="lead text-center">Flebovet es una empresa especializada en diagnóstico veterinario que ofrece servicios y soluciones avanzadas para la detección, análisis y prevención de enfermedades en animales. Con un enfoque basado en la innovación tecnológica, la precisión y la ética profesional, FleboVet apoya a veterinarios, clínicas y dueños de mascotas en la toma de decisiones críticas para el bienestar animal.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Misión y Visión -->
+    <section class="mission-vision-section py-5 scroll-effect">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="mission-card scroll-effect">
+                        <div class="card-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h2>Nuestra Misión</h2>
+                        <p>En FleboVet, nuestra misión es proporcionar diagnósticos veterinarios precisos, confiables y de alta calidad para garantizar la salud y el bienestar de los animales. Combinamos tecnología de vanguardia, experiencia profesional y atención personalizada para apoyar a los veterinarios y dueños de mascotas en la toma de decisiones informadas y en la promoción de una vida más saludable para todas las especies que atendemos. Nos comprometemos con la innovación, la ética y el cuidado animal como pilares fundamentales de nuestro servicio.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="vision-card scroll-effect">
+                        <div class="card-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h2>Nuestra Visión</h2>
+                        <p>Ser líderes en diagnóstico veterinario, reconocidos por nuestra innovación, precisión y compromiso con la salud animal. Aspiramos a convertirnos en aliados clave para los veterinarios y cuidadores, ofreciendo soluciones diagnósticas integrales que transformen el cuidado de los animales y promuevan su bienestar en todo momento. Nuestro objetivo es expandir nuestras fronteras, marcando un impacto positivo y sostenible en la medicina veterinaria a nivel regional y global.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Final con Imagen -->
+    <section class="about-image-section scroll-effect">
+        <div class="container">
+            <div class="row align-items-center g-4">
+                <div class="col-md-6">
+                    <div class="glass-card">
+                        <img src="{% static 'vetweb/img/nosotros.jpg' %}" 
+                             alt="Laboratorio" 
+                             class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="about-final-text">
+                        <p class="mb-0">La empresa se distingue por emplear técnicas diagnósticas de vanguardia, contar con un equipo de expertos altamente capacitados y mantener un compromiso constante con la calidad y la satisfacción de sus clientes. FleboVet busca no solo proporcionar resultados confiables, sino también educar y generar conciencia sobre la importancia del diagnóstico temprano en la salud animal.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
-<!-- Sección Introducción -->
-<section class="about-intro py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="about-card">
-                    <p class="lead text-center">Flebovet es una empresa especializada en diagnóstico veterinario que ofrece servicios y soluciones avanzadas para la detección, análisis y prevención de enfermedades en animales. Con un enfoque basado en la innovación tecnológica, la precisión y la ética profesional, FleboVet apoya a veterinarios, clínicas y dueños de mascotas en la toma de decisiones críticas para el bienestar animal.
+<style>
+/* Base mejorada */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap');
 
-                        </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+:root {
+    --main-blue: #1244C5;
+    --glass-white: rgba(255, 255, 255, 0.15);
+}
 
-<!-- Sección Final con Imagen -->
-<section class="about-image-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <img src="{% static 'vetweb/img/nosotros.jpg' %}" alt="Laboratorio FleboVet" class="img-fluid rounded shadow">
-            </div>
-            <div class="col-md-6">
-                <div class="about-final-text">
-                    <p>La empresa se distingue por emplear técnicas diagnósticas de vanguardia, contar con un equipo de expertos altamente capacitados y mantener un compromiso constante con la calidad y la satisfacción de sus clientes. FleboVet busca no solo proporcionar resultados confiables, sino también educar y generar conciencia sobre la importancia del diagnóstico temprano en la salud animal.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+.quienes-wrapper {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e1eeff 100%);
+    min-height: 100vh;
+    font-family: 'Raleway', sans-serif;
+}
 
-<!-- Sección Misión y Visión -->
-<section class="mission-vision-section py-5">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-lg-6">
-                <div class="mission-card">
-                    <div class="card-icon mb-4">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <h2>Nuestra Misión</h2>
-                    <p>En FleboVet , nuestra misión es proporcionar diagnósticos veterinarios precisos, confiables y de alta calidad para garantizar la salud y el bienestar de los animales. Combinamos tecnología de vanguardia, experiencia profesional y atención personalizada para apoyar a los veterinarios y dueños de mascotas en la toma de decisiones informadas y en la promoción de una vida más saludable para todas las especies que atendemos. Nos comprometemos con la innovación, la ética y el cuidado animal como pilares fundamentales de nuestro servicio.</p>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="vision-card">
-                    <div class="card-icon mb-4">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <h2>Nuestra Visión</h2>
-                    <p>Ser líderes en diagnóstico veterinario, reconocidos por nuestra innovación, precisión y compromiso con la salud animal. Aspiramos a convertirnos en aliados clave para los veterinarios y cuidadores, ofreciendo soluciones diagnósticas integrales que transformen el cuidado de los animales y promuevan su bienestar en todo momento. Nuestro objetivo es expandir nuestras fronteras, marcando un impacto positivo y sostenible en la medicina veterinaria a nivel regional y global.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+/* Hero Section - Mismo formato que productos */
+.hero-slider.quienes-page {
+    height: 500px !important;
+    margin-top: 76px;
+}
 
+.hero-slider.quienes-page .carousel-item {
+    height: 500px;
+}
 
+.hero-slider.quienes-page .carousel-caption {
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.3) 100%
+    );
+}
+
+/* ========== EFECTO SCROLL ========== */
+.scroll-effect {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scroll-effect.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ========== KEYFRAMES DE ANIMACIONES ========== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ========== INTRO SECTION ========== */
+.about-intro {
+    padding: 4rem 0;
+    background: linear-gradient(180deg, #fff, #f8f9fa);
+}
+
+.about-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.15);
+}
+
+/* ========== MISSION AND VISION CARDS ========== */
+.mission-vision-section {
+    padding: 4rem 0;
+    background: linear-gradient(180deg, #f8f9fa, #fff);
+}
+
+.mission-card, .vision-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.mission-card {
+    animation: slideInLeft 0.8s ease-out forwards;
+}
+
+.vision-card {
+    animation: slideInRight 0.8s ease-out forwards;
+}
+
+.mission-card:hover, .vision-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 45px rgba(31, 38, 135, 0.2);
+}
+
+.card-icon {
+    margin-bottom: 1.5rem;
+    color: #007bff;
+    font-size: 2rem;
+    transition: all 0.3s ease;
+}
+
+.mission-card:hover .card-icon,
+.vision-card:hover .card-icon {
+    transform: scale(1.1);
+}
+
+/* ========== LABORATORIO SECTION ========== */
+.about-image-section {
+    padding: 4rem 0;
+    background: linear-gradient(to right, rgba(248,249,250,0.5), rgba(255,255,255,1), rgba(248,249,250,0.5));
+}
+
+.glass-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.5s ease;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.glass-card img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.glass-card:hover img {
+    transform: scale(1.05);
+}
+
+.about-final-text {
+    height: 100%;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* MEDIA QUERIES */
+@media (max-width: 768px) {
+    .hero-slider.quienes-page {
+        height: 400px !important;
+        margin-top: 76px;
+    }
+    
+    .hero-slider.quienes-page .carousel-item {
+        height: 400px;
+    }
+
+    .glass-card img {
+        height: 300px;
+    }
+
+    .about-final-text {
+        margin-top: 1rem;
+        padding: 1.5rem;
+    }
+
+    .about-card,
+    .mission-card,
+    .vision-card {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-slider.quienes-page {
+        height: 300px !important;
+        margin-top: 76px;
+    }
+    
+    .hero-slider.quienes-page .carousel-item {
+        height: 300px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Observer para los efectos de scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, { 
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px' 
+    });
+
+    document.querySelectorAll('.scroll-effect').forEach(element => {
+        observer.observe(element);
+    });
+});
+</script>
 {% endblock %}

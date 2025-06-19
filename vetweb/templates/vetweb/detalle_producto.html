@@ -14,12 +14,24 @@
 <!-- Contenido principal -->
 <div class="container">
     <div class="product-detail">
-        <!-- Imagen del producto -->
+        <!-- Imagen del producto - AHORA VA PRIMERO -->
         <div class="product-image-container">
-            {% if producto.imagen %}
-                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+            {% if producto.id == 1 %}
+                <img src="{% static 'vetweb/img/hv-coa-7100.png' %}" alt="{{ producto.nombre }}">
+            {% elif producto.id == 2 %}
+                <img src="{% static 'vetweb/img/producto2.jpg' %}" alt="{{ producto.nombre }}">
+            {% elif producto.id == 3 %}
+                <img src="{% static 'vetweb/img/pcr.png' %}" alt="{{ producto.nombre }}">
+            {% elif producto.id == 4 %}
+                <img src="{% static 'vetweb/img/test_.jpg' %}" alt="{{ producto.nombre }}">
+            {% elif producto.id == 5 %}
+                <img src="{% static 'vetweb/img/v3.jpg' %}" alt="{{ producto.nombre }}">
             {% else %}
-                <img src="{% static 'vetweb/img/default-product.png' %}" alt="Imagen predeterminada">
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                {% else %}
+                    <img src="{% static 'vetweb/img/default-product.png' %}" alt="Imagen predeterminada">
+                {% endif %}
             {% endif %}
         </div>
 
@@ -29,85 +41,62 @@
         </div>
 
         <!-- Contenedor de acciones -->
-        <div class="actions-grid">
+        
             <!-- Stock -->
             <div class="stock-section">
                 {% if producto.stock > 0 %}
                 <div class="stock-badge">
-                    <span class="check">✓</span> Stock disponible ({{ producto.stock }} unidades)
-                </div>
-                {% else %}
-                <div class="stock-badge out-of-stock">
-                    <span class="cross">✗</span> Sin stock
-                </div>
-                {% endif %}
-                
-                <!-- Precio -->
-                {% if producto.precio > 0 %}
-                <div class="price-section">
-                    <span class="price-label">Precio:</span>
-                    <span class="price-value">${{ producto.precio|floatformat:0 }}</span>
+                    <span class="check">✓</span> Stock disponible
                 </div>
                 {% endif %}
             </div>
+
+            <div style="display:none">
+                ID: {{ producto.id }}
+                Es estático: {{ producto.es_estatico }}
+                URL contacto: {% url 'vetweb:contacto' %}
+            </div>
             
-            <!-- Botones de acción -->
-            <div class="action-buttons">
-                <!-- Botón de solicitar información -->
-                <a href="{% url 'vetweb:contacto' %}" class="btn-primary">
-                    <i class="fas fa-envelope"></i> SOLICITAR INFORMACIÓN
-                </a>
+            <!-- Botones -->
+            <div class="action-buttons">             
+                <a href="{% url 'vetweb:contacto' %}" class="btn-primary">                 
+                    SOLICITAR INFORMACIÓN             
+                </a>                      
+                {% if producto.pdf %}                  
+                    <a href="{% url 'vetweb:download_pdf' producto.id %}" class="btn-primary" target="_blank">
+                        <i class="fas fa-file-pdf"></i> Descargar Ficha Técnica                 
+                    </a>             
+                {% endif %}
+            </div>
+                    
+             
+           
+               
                 
-                <!-- Botón de descarga de PDF -->
-                {% if producto.pdf %}
-                    <a href="{% url 'vetweb:download_pdf' producto.id %}" class="btn-secondary download-pdf">
-                        <i class="fas fa-file-pdf"></i> DESCARGAR FICHA TÉCNICA
-                    </a>
-                {% endif %}
+             
+            
 
-                <!-- Botones para clientes autenticados -->
-                {% if user.is_authenticated and not user.is_staff and user.userprofile.role != 'ADMIN' %}
-                    <div class="client-actions">
-                        <!-- Botón de agregar al carrito -->
-                        {% if producto.stock > 0 %}
-                        <form method="post" action="{% url 'vetweb:carrito_agregar' producto.id %}" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn-cart">
-                                <i class="bi bi-cart-plus"></i> AGREGAR AL CARRITO
-                            </button>
-                        </form>
-                        {% endif %}
 
-                        <!-- Botón de lista de deseos -->
-                        {% if en_lista_deseos %}
-                            <form method="post" action="{% url 'vetweb:quitar_de_deseos' producto.id %}" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-wishlist active">
-                                    <i class="bi bi-heart-fill"></i> EN LISTA DE DESEOS
-                                </button>
-                            </form>
-                        {% else %}
-                            <form method="post" action="{% url 'vetweb:agregar_a_deseos' producto.id %}" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-wishlist">
-                                    <i class="bi bi-heart"></i> AGREGAR A DESEOS
-                                </button>
-                            </form>
-                        {% endif %}
-                    </div>
-                {% endif %}
+               
             </div>
         </div>
     </div>
 </div>
 
+<script>
+    document.querySelectorAll('a.btn-primary[href*="download/pdf"]').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.open(this.href, '_blank');  // Abre y mantiene la pestaña
+      });
+    });
+  </script>
+
 <style>
 /* Variables globales */
 :root {
-    --flebovet-blue: #0052CC;
+    --flebovet-blue: #0052CC;    /* Color azul correcto del logo */
     --border-color: rgba(0, 82, 204, 0.1);
-    --success-color: #28a745;
-    --danger-color: #dc3545;
 }
 
 /* Hero section */
@@ -116,11 +105,10 @@
     padding: 2rem 0;
     margin-bottom: 2rem;
     border-bottom: 1px solid var(--border-color);
-    margin-top: 76px;
 }
 
 .hero-content h1 {
-    color: var(--flebovet-blue);
+    color: #0052CC;
     font-size: 2rem;
     font-weight: 600;
     margin: 0;
@@ -130,7 +118,7 @@
 .product-detail {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem 0 2rem 0;
+    padding: 1rem 0;
 }
 
 /* Imagen del producto */
@@ -157,16 +145,16 @@
 
 /* Grid de contenido */
 .content-grid {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
 }
 
+/* Estilos de títulos unificados */
 .content-grid h2,
-.content-grid h3 {
-    color: var(--flebovet-blue) !important;
+.content-grid h3,
+.section-title {
+    color: #0052CC !important;
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0 0 1rem;
@@ -175,25 +163,40 @@
 }
 
 .content-grid h4 {
-    color: var(--flebovet-blue) !important;
+    color: #0052CC !important;
     font-size: 1.25rem;
     font-weight: 600;
     margin: 1rem 0 0.75rem;
 }
 
-.content-grid p {
+/* Secciones */
+.specs-section,
+.features-section {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+}
+
+/* Contenido de texto */
+.specs-section p,
+.features-section p {
     color: #4a5568;
     line-height: 1.6;
     margin-bottom: 1rem;
 }
 
-.content-grid ul {
+/* Listas */
+.specs-section ul,
+.features-section ul {
     list-style: none;
     padding: 0;
     margin: 0 0 1rem;
 }
 
-.content-grid li {
+.specs-section li,
+.features-section li {
     position: relative;
     padding-left: 1.5rem;
     margin-bottom: 0.5rem;
@@ -201,22 +204,46 @@
     line-height: 1.6;
 }
 
-.content-grid li:before {
+.specs-section li:before,
+.features-section li:before {
     content: "✓";
-    color: var(--flebovet-blue);
+    color: #0052CC;
     position: absolute;
     left: 0;
     font-weight: 500;
 }
 
+/* Items de especificaciones */
+.specs-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.specs-item:last-child {
+    border-bottom: none;
+}
+
+.specs-label {
+    font-weight: 500;
+    color: #2d3748;
+}
+
+.specs-value {
+    color: #4a5568;
+}
+
 /* Grid de acciones */
 .actions-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
+    margin-top: 1.5rem;
 }
 
-/* Sección de stock */
+/* Stock */
 .stock-section {
     background: white;
     padding: 1.5rem;
@@ -228,44 +255,12 @@
     display: inline-flex;
     align-items: center;
     padding: 0.5rem 1rem;
+    background: rgba(0, 82, 204, 0.05);
     border-radius: 4px;
-    margin-bottom: 1rem;
+    color: #0052CC;
 }
 
-.stock-badge:not(.out-of-stock) {
-    background: rgba(40, 167, 69, 0.1);
-    color: var(--success-color);
-}
-
-.stock-badge.out-of-stock {
-    background: rgba(220, 53, 69, 0.1);
-    color: var(--danger-color);
-}
-
-.check, .cross {
-    margin-right: 0.5rem;
-    font-weight: bold;
-}
-
-.price-section {
-    padding: 1rem 0;
-    border-top: 1px solid var(--border-color);
-}
-
-.price-label {
-    display: block;
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 0.25rem;
-}
-
-.price-value {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--flebovet-blue);
-}
-
-/* Botones de acción */
+/* Botones */
 .action-buttons {
     background: white;
     padding: 1.5rem;
@@ -277,118 +272,83 @@
 }
 
 .btn-primary,
-.btn-secondary,
-.btn-cart,
-.btn-wishlist {
+.btn-secondary {
     display: inline-block;
     width: 100%;
     padding: 0.75rem 1.25rem;
-    border-radius: 6px;
+    border-radius: 4px;
     text-align: center;
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: all 0.2s;
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border: none;
-    cursor: pointer;
-    font-size: 0.9rem;
-}
-
-.btn-primary {
-    background: var(--flebovet-blue);
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #003d99;
-    color: white;
-    text-decoration: none;
-}
-
-.btn-secondary {
     background: transparent;
-    border: 1px solid var(--flebovet-blue);
-    color: var(--flebovet-blue);
+    border: 1px solid rgba(0, 82, 204, 0.3);
+    color: #0052CC;
 }
 
+.btn-primary:hover,
 .btn-secondary:hover {
-    background: var(--flebovet-blue);
-    color: white;
-    text-decoration: none;
-}
-
-.btn-cart {
-    background: var(--success-color);
-    color: white;
-    margin-top: 0.5rem;
-}
-
-.btn-cart:hover {
-    background: #218838;
-    color: white;
-}
-
-.btn-wishlist {
-    background: transparent;
-    border: 1px solid #e53e3e;
-    color: #e53e3e;
-}
-
-.btn-wishlist:hover {
-    background: #e53e3e;
-    color: white;
-}
-
-.btn-wishlist.active {
-    background: #e53e3e;
-    color: white;
-}
-
-.client-actions {
-    border-top: 1px solid var(--border-color);
-    padding-top: 1rem;
-    margin-top: 0.5rem;
+    background: rgba(0, 82, 204, 0.05);
+    border-color: #0052CC;
 }
 
 /* Responsive */
-@media (max-width: 768px) {
-    .product-hero {
-        margin-top: 60px;
-        padding: 1rem 0;
+@media (max-width: 992px) {
+    .content-grid {
+        grid-template-columns: 1fr;
     }
-    
-    .hero-content h1 {
-        font-size: 1.5rem;
-    }
-    
+
     .actions-grid {
         grid-template-columns: 1fr;
     }
 
     .product-image-container {
-        height: 250px;
+        height: 300px;
     }
 
     .product-image-container img {
-        max-height: 200px;
+        max-height: 250px;
     }
-    
+}
+
+@media (max-width: 576px) {
     .product-detail {
         padding: 1rem;
     }
+
+    .specs-item {
+        grid-template-columns: 1fr;
+    }
+   
+    
+.pdf-container {
+    margin: -10px 0 25px 0;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.btn-pdf {
+    display: block;
+    padding: 10px 20px;
+    background-color: #0052CC;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.btn-pdf:hover {
+    background: rgba(0, 82, 204, 0.05);
+    border-color: #0052CC;
+    text-decoration: none;
+}
+
+.btn-pdf i {
+    margin-right: 8px;
+
 }
 </style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Mejorar la descarga de PDF
-    document.querySelectorAll('.download-pdf').forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Permitir que el navegador maneje la descarga normalmente
-            console.log('Descargando PDF:', this.href);
-        });
-    });
-});
-</script>
 {% endblock %}

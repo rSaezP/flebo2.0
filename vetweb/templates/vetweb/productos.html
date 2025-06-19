@@ -59,7 +59,7 @@
       <div class="col-md-3">
         <button type="submit" class="btn btn-primary">Filtrar</button>
         {% if filtros_aplicados %}
-        
+        <a
           href="{% url 'vetweb:productos' %}"
           class="btn btn-outline-secondary ms-2"
           >Limpiar</a
@@ -144,6 +144,14 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <style>
+  /* Importar fuente Raleway */
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap');
+
+  /* Aplicar fuente Raleway a toda la página */
+  body {
+    font-family: 'Raleway', sans-serif;
+  }
+
   /* Contenedor del producto */
   .form-product {
     background: rgba(255, 255, 255, 0.9);

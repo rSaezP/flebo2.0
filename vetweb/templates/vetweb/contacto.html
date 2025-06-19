@@ -12,14 +12,18 @@ window.onload = function() {
 </script>
 
 <!-- Hero Section -->
-<div class="hero-slider contact-page">
+<div class="hero-slider contacto-page">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="{% static 'vetweb/img/225.jpg' %}" class="d-block w-100" alt="FleboVet">
+            <img
+                src="{% static 'vetweb/img/225.jpg' %}"
+                class="d-block w-100"
+                alt="FleboVet"
+            />
             <div class="carousel-caption">
                 <div class="container">
                     <div class="caption-content text-start">
-                        <h1>CONTÁCTO</h1>
+                        <h1>CONTACTO</h1>
                         <p>Estamos aquí para atender tus consultas</p>
                     </div>
                 </div>
@@ -96,71 +100,30 @@ window.onload = function() {
 </section>
 
 <style>
-/* Estilos específicos para la página de contacto */
-.hero-slider.contact-page {
-    position: relative;
-    z-index: 1;
-    margin: 0 !important;
-    padding: 0 !important;
-    margin-top: -89px !important;
-    height: 700px !important;
-    width: 100%;
-    overflow: hidden;
+/* Importar fuente Raleway */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap');
+
+/* Hero Section - Mismo formato que productos */
+.hero-slider.contacto-page {
+    height: 500px !important;
+    margin-top: 76px;
 }
 
-.hero-slider.contact-page .carousel-inner {
-    height: 100%;
+.hero-slider.contacto-page .carousel-item {
+    height: 500px;
 }
 
-.hero-slider.contact-page .carousel-item {
-    height: 100%;
+.hero-slider.contacto-page .carousel-caption {
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.3) 100%
+    );
 }
 
-.hero-slider.contact-page img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: center !important;
-    display: block !important;
-    margin: 0;
-    padding: 0
-}
-
-.hero-slider.contact-page .carousel-caption {
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 2rem;
-    margin: 0;
-    border-radius: 0;
-}
-
-.hero-slider.contact-page .caption-content {
-    z-index: 3;
-    position: relative;
-    max-width: 800px;
-    text-align: left;
-}
-
-.hero-slider.contact-page h1 {
-    color: white !important;
-    font-size: 3.5rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.hero-slider.contact-page p {
-    color: white !important;
-    font-size: 1.5rem;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+/* Aplicar fuente Raleway a toda la página */
+body {
+    font-family: 'Raleway', sans-serif;
 }
 
 /* Fix para mensajes */
@@ -215,6 +178,28 @@ window.onload = function() {
 
 .alert-dismissible .btn-close:hover {
     opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .hero-slider.contacto-page {
+        height: 400px !important;
+        margin-top: 76px;
+    }
+    
+    .hero-slider.contacto-page .carousel-item {
+        height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-slider.contacto-page {
+        height: 300px !important;
+        margin-top: 76px;
+    }
+    
+    .hero-slider.contacto-page .carousel-item {
+        height: 300px;
+    }
 }
 </style>
 {% endblock %}
