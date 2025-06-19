@@ -2,12 +2,12 @@
 {% load static %}
 
 {% block content %}
-<div class="hero-slider">
+<div class="hero-slider index-page">
     <div id="mainCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
         <div class="carousel-inner">
             <!-- Primera slide -->
             <div class="carousel-item active">
-                <img src="{% static 'vetweb/img/flebo_1.png' %}" class="d-block w-100 desktop-img" alt="FleboVet">
+                <img src="{% static 'vetweb/img/flebo_1.png' %}" class="d-block w-100" alt="FleboVet">
                 <img src="{% static 'vetweb/img/flebo_1.png' %}" class="mobile-img-tag" alt="FleboVet Móvil">
                 <div class="carousel-caption">
                     <div class="container">
@@ -29,8 +29,7 @@
 
             <!-- Segunda slide -->
             <div class="carousel-item">
-                <img src="{% static 'vetweb/img/3.png' %}" class="d-block w-100 desktop-img" alt="FleboVet Laboratorio">
-                <img src="{% static 'vetweb/img/3.png' %}" class="mobile-img-tag" alt="FleboVet Laboratorio Móvil">
+                <img src="{% static 'vetweb/img/3.png' %}" class="d-block w-100" alt="FleboVet Laboratorio">
                 <div class="carousel-caption">
                     <div class="container">
                         <div class="caption-content text-start">
@@ -59,7 +58,7 @@
 </div>
 
 <section class="glass-icons-section">
-    <div class="container-fluid"> <!-- Cambiado a container-fluid -->
+    <div class="container-fluid">
         <div class="bubbles-container">
             <!-- Instagram -->
             <a href="https://www.instagram.com/biocant/?igsh=MWh2cTk1dHlzbm43bw%3D%3D#" class="bubble-link">
@@ -126,51 +125,30 @@ body {
     z-index: 9999 !important;
 }
 
-/* ===== CAROUSEL HERO SECTION ===== */
-.hero-slider {
-    margin-top: 0 !important;
-    padding: 0 !important;
-    height: 100vh !important;
-    min-height: 950px !important;
-    overflow: hidden !important;
+/* ===== SOLO PARA EL INDEX HERO ===== */
+.hero-slider.index-page {
+    margin-top: 76px !important;
+    min-height: 850px !important;
+    height: 88vh !important;
     position: relative !important;
+    overflow: hidden !important;
     width: 100% !important;
     z-index: 1 !important;
 }
-
-.hero-slider .carousel,
-.hero-slider .carousel-inner,
-.hero-slider .carousel-item {
+.hero-slider.index-page .carousel-item,
+.hero-slider.index-page .carousel-inner,
+.hero-slider.index-page .carousel {
     height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }
-
-#mainCarousel {
-    height: 100% !important;
-    overflow: hidden !important;
-}
-
-.carousel-item {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
+.hero-slider.index-page .carousel-item img {
     width: 100% !important;
     height: 100% !important;
-}
-
-/* IMÁGENES DEL CAROUSEL - SOLUCIÓN PARA MOSTRAR LOGO COMPLETO */
-.hero-slider .carousel-item img {
-    width: 110% !important;
-    height: 120% !important;
     object-fit: cover !important;
-    object-position: center bottom!important;
+    object-position: center bottom !important;
+    background: linear-gradient(135deg, #f0f7ff 0%, #e1eeff 100%) !important;
     display: block !important;
-    transform: translateY(-5,-10%) !important; /* Mover imagen hacia arriba */
 }
-
-/* CAPTIONS CON GRADIENTE */
-.carousel-caption {
+.hero-slider.index-page .carousel-caption {
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
@@ -179,13 +157,13 @@ body {
     background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%) !important;
     display: flex !important;
     align-items: center !important;
+    padding-bottom: 80px !important;
     z-index: 2 !important;
 }
 
 .caption-content {
     max-width: 700px !important;
     padding-left: 50px !important;
-    z-index: 3 !important;
 }
 
 .caption-content h1 {
@@ -284,12 +262,25 @@ body {
     opacity: 1;
     transform: translateY(0);
 }
+ .mobile-img-tag {
+            display: none;
+        }
+
+.mobile-img-tag {
+                display: block !important;
+                z-index: 1 !important;
+            }
+            
+
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
-    .hero-slider {
+    .hero-slider.index-page {
+        min-height: 550px !important;
         height: 70vh !important;
-        min-height: 500px !important;
+    }
+    .hero-slider.index-page .carousel-caption {
+        padding-bottom: 40px !important;
     }
     
     .caption-content {
@@ -330,9 +321,12 @@ body {
 }
 
 @media (max-width: 576px) {
-    .hero-slider {
-        height: 65vh !important;
+    .hero-slider.index-page {
         min-height: 450px !important;
+        height: 60vh !important;
+    }
+    .hero-slider.index-page .carousel-caption {
+        padding-bottom: 20px !important;
     }
     
     .caption-content h1 {
@@ -342,6 +336,17 @@ body {
     .caption-content p {
         font-size: 1rem !important;
     }
+}
+
+/* Asegurar que también se aplique a las imágenes dentro del carousel del index */
+.hero-slider.index-page #mainCarousel .carousel-item img,
+.hero-slider.index-page .carousel .carousel-item img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center bottom !important;
+    background: linear-gradient(135deg, #f0f7ff 0%, #e1eeff 100%) !important;
+    display: block !important;
 }
 </style>
    
