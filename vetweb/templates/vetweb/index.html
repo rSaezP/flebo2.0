@@ -2,21 +2,20 @@
 {% load static %}
 
 {% block content %}
-<div class="hero-slider">
+<!-- Hero Slider Section - Mejorado con clases consistentes -->
+<div class="hero-slider index-page">
     <div id="mainCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
         <div class="carousel-inner">
             <!-- Primera slide -->
             <div class="carousel-item active">
-                <img src="{% static 'vetweb/img/12.jpg' %}" class="d-block w-100" alt="FleboVet">
+                <img src="{% static 'vetweb/img/flebo_1.png' %}" class="d-block w-100" alt="FleboVet">
                 <div class="carousel-caption">
                     <div class="container">
                         <div class="caption-content text-start">
                             <div class="biocant-badge mb-3">
-                                <span>División Veterinaria de <a href="https://biocant.cl/" target="_blank">Biocant</a></span>
+                                <span>Flebovet pertenece a la división veterinaria de <a href="https://biocant.cl/" target="_blank">Biocant</a></span>
                             </div>
-
                             <h1>DIAGNÓSTICO<br>VETERINARIO</h1>
-                            <p>Tecnología e Innovación al Servicio de la Medicina Veterinaria</p>
                             <div class="d-flex gap-3">
                                 <a href="{% url 'vetweb:productos' %}" class="btn btn-primary">Ver Productos</a>
                                 <a href="{% url 'vetweb:contacto' %}" class="btn btn-outline-light">Contáctanos</a>
@@ -28,7 +27,7 @@
 
             <!-- Segunda slide -->
             <div class="carousel-item">
-                <img src="{% static 'vetweb/img/flebo_1.png' %}" class="d-block w-100" alt="FleboVet Laboratorio">
+                <img src="{% static 'vetweb/img/3.png' %}" class="d-block w-100" alt="FleboVet Laboratorio">
                 <div class="carousel-caption">
                     <div class="container">
                         <div class="caption-content text-start">
@@ -55,4 +54,368 @@
         </button>
     </div>
 </div>
+
+<!-- Sección de iconos de vidrio - Restaurada exactamente como el original -->
+<section class="glass-icons-section">
+    <div class="container-fluid"> <!-- Cambiado a container-fluid -->
+        <div class="bubbles-container">
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/biocant/?igsh=MWh2cTk1dHlzbm43bw%3D%3D#" class="bubble-link">
+                <div class="glass-bubble">
+                    <div class="bubble-content">
+                        <i class="fab fa-instagram bubble-icon"></i>
+                        <span class="bubble-text">Instagram</span>
+                    </div>
+                    <div class="bubble-shine"></div>
+                    <div class="bubble-backdrop"></div>
+                </div>
+            </a>
+
+            <!-- Biocant -->
+            <a href="https://biocant.cl/" class="bubble-link">
+                <div class="glass-bubble">
+                    <div class="bubble-content">
+                        <i class="fas fa-building bubble-icon"></i>
+                        <span class="bubble-text">Biocant</span>
+                    </div>
+                    <div class="bubble-shine"></div>
+                    <div class="bubble-backdrop"></div>
+                </div>
+            </a>
+
+            <!-- Sobre Nosotros -->
+            <a href="{% url 'vetweb:quienes_somos' %}" class="bubble-link">
+                <div class="glass-bubble">
+                    <div class="bubble-content">
+                        <i class="fas fa-users bubble-icon"></i>
+                        <span class="bubble-text">Sobre Nosotros</span>
+                    </div>
+                    <div class="bubble-shine"></div>
+                    <div class="bubble-backdrop"></div>
+                </div>
+            </a>
+
+            <!-- Políticas -->
+            <a href="{% url 'vetweb:policies' %}" class="bubble-link">
+                <div class="glass-bubble">
+                    <div class="bubble-content">
+                        <i class="fas fa-file-alt bubble-icon"></i>
+                        <span class="bubble-text">Políticas</span>
+                    </div>
+                    <div class="bubble-shine"></div>
+                    <div class="bubble-backdrop"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <style>
+        .glass-icons-section {
+            background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
+            padding: 4rem 0;
+            overflow: hidden;
+            position: relative;
+            margin-top: -2rem;
+            width: 100%;
+        }
+
+        .container-fluid {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .bubbles-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5%;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .bubble-link {
+            text-decoration: none;
+            color: inherit;
+            flex: 0 0 auto;
+        }
+
+        .glass-bubble {
+            width: 250px;
+            height: 250px;
+            position: relative;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        
+        .bubble-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bubble-icon {
+            font-size: 3.5rem;
+            color: #1244C5;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bubble-text {
+            color: #1244C5;
+            font-size: 1.2rem;
+            font-weight: 500;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bubble-shine {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            top: -25%;
+            left: -25%;
+            background: radial-gradient(
+                circle at 50% 50%,
+                rgba(255, 255, 255, 0.8),
+                transparent 70%
+            );
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bubble-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-bubble:hover {
+            transform: translateY(-10px) scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 25px 45px rgba(18, 68, 197, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .glass-bubble:hover .bubble-icon {
+            transform: translateY(-10px);
+            color: #0056b3;
+        }
+
+        .glass-bubble:hover .bubble-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .glass-bubble:hover .bubble-shine {
+            opacity: 1;
+            transform: rotate(45deg);
+        }
+
+        .glass-bubble:hover .bubble-backdrop {
+            opacity: 1;
+        }
+
+        @media (max-width: 1400px) {
+            .bubbles-container {
+                gap: 3%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .bubbles-container {
+                flex-wrap: wrap;
+                gap: 2rem;
+                margin-top: 1rem !important;
+                justify-content: center;
+            }
+        
+            /* Mostrar correctamente el carrusel en dispositivos móviles */
+            .hero-slider {
+                margin-top: 56px !important; /* Altura del header */
+                padding: 0 !important;
+                position: relative !important;
+                display: block !important;
+                width: 100% !important;
+                z-index: 1 !important;
+                height: 280px !important; /* Altura fija para el contenedor */
+                overflow: hidden !important;
+            }
+            
+            .carousel, 
+            .carousel-inner {
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 280px !important;
+            }
+            
+            #mainCarousel {
+                display: block !important;
+                height: 280px !important;
+                position: relative !important;
+                overflow: hidden !important;
+            }
+            
+            .carousel-item {
+                display: block !important;
+                position: absolute !important; /* Posición absoluta para mantener alineación */
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 280px !important;
+            }
+            
+            /* Ajustes de las imágenes */
+            .carousel-item img {
+                width: 100% !important;
+                height: 280px !important;
+                object-fit: cover !important;
+            }
+            
+            /* Estilo para el caption */
+            .carousel-caption {
+                position: absolute !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                background: rgba(0,0,0,0.6) !important;
+                padding: 15px !important;
+                border-radius: 0 !important;
+                z-index: 2 !important;
+            }
+            
+            header {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                z-index: 9999 !important;
+                background-color: white !important;
+            }
+            
+            .carousel-caption h1 {
+                font-size: 1.8rem !important;
+            }
+            
+            .carousel-caption p {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            .carousel-caption .btn {
+                padding: 0.5rem 1rem !important;
+                font-size: 0.9rem !important;
+            }
+            
+            /* Ajustes de la sección de burbujas - MODIFICADO PARA CORREGIR POSICIÓN */
+            .glass-icons-section {
+                position: relative !important;
+                z-index: 2 !important;
+                padding: 0 !important;
+                margin-top: 0 !important;
+                background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%) !important;
+            }
+            
+            /* Solución para íconos muy abajo */
+            section.glass-icons-section div.container-fluid {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            section.glass-icons-section div.container-fluid div.bubbles-container {
+                display: grid !important; /* Cambiado a grid para mejor control */
+                grid-template-columns: 1fr 1fr !important; /* Dos columnas iguales */
+                grid-gap: 1.5rem !important;
+                margin-top: 20px !important; 
+                padding: 1rem !important;
+                justify-content: center !important;
+                width: 90% !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                position: relative !important;
+                top: 0 !important;
+            }
+            
+            /* Ajustamos cada burbuja para que ocupe toda su celda */
+            .bubble-link {
+                display: flex !important;
+                justify-content: center !important;
+                width: 100% !important;
+            }
+            
+            /* Reducir tamaño para ajustar mejor en la pantalla */
+            .glass-bubble {
+                width: 140px !important;
+                height: 140px !important;
+            }
+            
+            .bubble-icon {
+                font-size: 2.5rem !important;
+            }
+            
+            .bubble-text {
+                font-size: 1rem !important;
+            }
+            
+            /* Ajustes para el navbar */
+            .navbar:hover .nav-link {
+                color: rgb(3, 45, 160) !important;
+            }
+        }
+    </style>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Ajuste para asegurar que el logo se muestre correctamente */
+.carousel-item {
+    position: relative;
+}
+
+.carousel-item::after {
+    content: '';
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 200px;
+    height: 60px;
+    background-image: url('{% static "vetweb/img/logo_flebo.png" %}');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 10;
+}
+
+@media (max-width: 576px) {
+    .carousel-item::after {
+        width: 120px;
+        height: 35px;
+        bottom: 70px;
+        right: 10px;
+    }
+}
+</style>
 {% endblock %}

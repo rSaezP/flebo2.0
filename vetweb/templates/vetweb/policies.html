@@ -4,13 +4,25 @@
 {% block content %}
 <div class="policy-wrapper">
     <!-- Hero Section mejorada -->
-    <section class="glass-hero" style="background-image: url('{% static 'vetweb/img/15.jpg' %}');">
-        <div class="hero-overlay"></div>
-        <div class="hero-container">
-            <h1 class="hero-title">POLITICAS FLEBOvet</h1>
-            <p class="hero-subtitle">Compromiso con la excelencia veterinaria</p>
+    <div class="hero-slider policies-page">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img
+                    src="{% static 'vetweb/img/15.jpg' %}"
+                    class="d-block w-100"
+                    alt="FleboVet"
+                />
+                <div class="carousel-caption">
+                    <div class="container">
+                        <div class="caption-content text-start">
+                            <h1>POLITICAS FLEBOvet</h1>
+                            <p>Compromiso con la excelencia veterinaria</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
 
     <!-- Contenido Principal -->
     <main class="glass-main-container">
@@ -139,7 +151,7 @@
 
 <style>
 /* Base mejorada */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap');
 
 :root {
     --main-blue: #1244C5;
@@ -147,70 +159,27 @@
 }
 
 .policy-wrapper {
-    padding-top: 80px;
     background: linear-gradient(135deg, #f0f7ff 0%, #e1eeff 100%);
     min-height: 100vh;
+    font-family: 'Raleway', sans-serif;
 }
 
-/* Hero Section */
-.glass-hero {
-    position: relative;
-    height: 70vh;
-    min-height: 500px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-image: url('tu-imagen.jpg'); /* Solo la imagen */
-}
-.glass-hero::before {
-    content: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(18, 68, 197, 0.1); /* Suavizado */
-    backdrop-filter: blur(0.5px); /* Blur mínimo */
+/* Hero Section - Mismo formato que productos */
+.hero-slider.policies-page {
+    height: 500px !important;
+    margin-top: 76px;
 }
 
-.hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(18, 68, 197, 0.03);  /* Overlay más transparente */
-    background: linear-gradient(to bottom, 
-    rgba(18, 68, 197, 0.1) 0%,  /* Cambiado de 0.05 a 0.1 */
-    rgba(18, 68, 197, 0.05) 100%); /* Cambiado de 0.02 a 0.05 */
-    backdrop-filter: blur(0.3px);  /* Reducido de 0.5px a 0.3px */
+.hero-slider.policies-page .carousel-item {
+    height: 500px;
 }
 
-.hero-container {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 20px;
-    max-width: 90%;
-    
-}
-
-.hero-title {
-    font-weight: 700;
-    font-size: 2.5rem;
-    color: white;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    margin-bottom: 1rem;
-}
-
-.hero-subtitle {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1.2rem;
-    max-width: 600px;
-    margin: 0 auto;
+.hero-slider.policies-page .carousel-caption {
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.3) 100%
+    );
 }
 
 /* Plazos Container */
@@ -235,7 +204,7 @@
 }
 
 .plazo-content span {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Raleway', sans-serif;
     font-weight: 700;
     font-size: 2.5rem;
     color: var(--main-blue);
@@ -260,7 +229,7 @@
 }
 
 .section-title {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Raleway', sans-serif;
     color: var(--main-blue);
     display: flex;
     align-items: center;
@@ -381,40 +350,24 @@
         grid-template-columns: 1fr;
     }
     
-    .glass-hero {
-        height: 60vh;
-        min-height: 400px;
-        background-image: 
-        linear-gradient(
-            to right,
-            rgba(18, 68, 197, 0.1) 0%,  /* 10% de opacidad */
-            rgba(18, 68, 197, 0.05) 100%  /* 5% de opacidad */
-        ),
-        url('tu-imagen.jpg');
-        
+    .hero-slider.policies-page {
+        height: 400px !important;
+        margin-top: 76px;
+    }
     
-        .hero-title {
-            font-size: 2.2rem !important;
-            margin-bottom: 0.5rem !important;
-        }
-        .hero-subtitle {
-            font-size: 1.1rem !important;
-        }
-        
+    .hero-slider.policies-page .carousel-item {
+        height: 400px;
     }
 }
+
 @media (max-width: 480px) {
-    .glass-hero {
-        height: 50vh;
-        min-height: 300px;
+    .hero-slider.policies-page {
+        height: 300px !important;
+        margin-top: 76px;
     }
-
-    .hero-title {
-        font-size: 2rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1rem;
+    
+    .hero-slider.policies-page .carousel-item {
+        height: 300px;
     }
 }
 </style>

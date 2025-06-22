@@ -84,7 +84,7 @@
                                                         
                                                         <div class="card-body">
                                                             <h5 class="card-title">{{ item.producto.nombre }}</h5>
-                                                            <p class="card-text">{{ item.producto.descripcion|truncatechars:100 }}</p>
+                                                            <p class="card-text">{{ item.producto.descripcion|striptags|truncatechars:100 }}</p>
                                                             <p class="card-text text-primary">${{ item.producto.precio }}</p>
                                                             
                                                             <div class="d-flex justify-content-between">
