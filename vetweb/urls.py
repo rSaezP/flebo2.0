@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from vetweb.views import CrearOrden
+
 
 app_name = 'vetweb'
 
@@ -21,6 +23,7 @@ urlpatterns = [
     path('orden/crear/', views.crear_orden, name='crear_orden'),
     path('orden/confirmacion/<int:orden_id>/', views.confirmacion_orden, name='confirmacion_orden'),
     path('policies/', views.policies_view, name='policies'),
+    path('api/orders', CrearOrden.as_view()),
     
 # URLs para reseteo de contraseña con tus nombres de archivo
     # Password Reset URLs

@@ -40,10 +40,12 @@
                 {% csrf_token %}
                 <button type="submit" class="contact-button w-100">Confirmar compra</button>
               </form>
+              
             {% else %}
               <p>Tu carrito está vacío.</p>
               <a href="{% url 'vetweb:productos' %}" class="btn btn-primary">Volver a productos</a>
             {% endif %}
+            <div id="paypal-button-container" class="mt-4"></div>
           </div>
         </div>
       </div>
@@ -78,4 +80,22 @@
     color: rgba(17, 127, 239, 1);
   }
 </style>
+
+<!-- Initialize the JS-SDK -->
+
+<script
+src="https://www.paypal.com/sdk/js?client-id=test"
+data-sdk-integration-source="developer-studio"
+></script>
+<script type="module">
+  window.paypal
+  .Buttons({
+    style:{
+      shape: "rect",
+      layout: "vertical",
+      color: "gold",
+      label: "paypal",
+    },
+  }).render("#paypal-button-container")
+</script>
 {% endblock %}

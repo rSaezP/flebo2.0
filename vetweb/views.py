@@ -27,6 +27,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.core.mail import send_mail 
 from django.conf import settings
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .functions import generateAccessToken, createOrder
 
 
 
@@ -120,10 +124,6 @@ def contacto(request):
             messages.error(request, 'Error al enviar el mensaje. Por favor, intenta nuevamente.')
     
     return render(request, 'vetweb/contacto.html')
-
-
-def policies_view(request):
-    return render(request, 'vetweb/policies.html')
 
 def login_admin(request):
     if request.method == 'POST':
@@ -324,6 +324,7 @@ def carrito_agregar(request, producto_id):
     
     # Redirección normal
     return redirect('vetweb:carrito_ver')
+
 @login_required
 def carrito_eliminar(request, item_id):
     item = get_object_or_404(CarritoItem, id=item_id, carrito__user=request.user)
@@ -594,3 +595,12 @@ def crear_orden(request):
 def confirmacion_orden(request, orden_id):
     orden = get_object_or_404(Orden, id=orden_id, user=request.user)
     return render(request, 'vetweb/cliente/confirmacion_orden.html', {'orden': orden})
+
+def policies_view(request):
+    return render(request, 'vetweb/policies.html')
+
+#view para crear orden con PayPal
+class CrearOrden(APIView):
+    def post(self, request):
+        orden = createOrder('productos')
+        return Response(orden, status=status.HTTP_200_OK)
