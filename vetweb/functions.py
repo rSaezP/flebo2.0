@@ -31,7 +31,7 @@ def createOrder(productos):
             "purchase_units":[
                 {
                     "amount": {
-                        "currency_code": "CLP",
+                        "currency_code": "USD",
                         "value": "1"
                     }
                 }
