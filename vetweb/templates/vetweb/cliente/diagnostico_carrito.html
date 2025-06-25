@@ -1,0 +1,167 @@
+{% extends 'vetweb/base.html' %}
+
+{% block content %}
+<div class="diagnostico-section">
+    <div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h2 class="mb-0 texto-principal">Diagnóstico del Carrito</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Información del Usuario</h4>
+                        <p><strong>Usuario:</strong> {{ usuario }}</p>
+                        <p><strong>Carrito existe:</strong> 
+                            {% if carrito_existe %}
+                                <span class="badge bg-success">Sí</span>
+                            {% else %}
+                                <span class="badge bg-danger">No</span>
+                            {% endif %}
+                        </p>
+                        
+                        {% if carrito_creado %}
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle"></i> Carrito creado exitosamente
+                            </div>
+                        {% endif %}
+                        
+                        {% if error %}
+                            <div class="alert alert-danger">
+                                <i class="bi bi-exclamation-triangle"></i> Error: {{ error }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4>Items en el Carrito</h4>
+                        <p><strong>Cantidad de items:</strong> {{ items_count }}</p>
+                        
+                        {% if items_detalle %}
+                            <ul class="list-group">
+                                {% for item in items_detalle %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {{ item.producto__nombre }}
+                                        <span class="badge bg-primary rounded-pill">{{ item.cantidad }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted">No hay items en el carrito</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <h4>Acciones de Limpieza</h4>
+                        {% if limpieza_exitosa %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> Limpieza de carritos huérfanos completada
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i> Error en la limpieza de carritos
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{% url 'vetweb:carrito_ver' %}" class="btn btn-primary">
+                        <i class="bi bi-cart3"></i> Ir al Carrito
+                    </a>
+                    <a href="{% url 'vetweb:productos' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-bag"></i> Ver Productos
+                    </a>
+                    <a href="{% url 'vetweb:profile' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-person"></i> Mi Perfil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.diagnostico-section {
+    padding-top: 120px;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 120px);
+    position: relative;
+    z-index: 1;
+}
+
+.diagnostico-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+.diagnostico-section .card {
+    border: 1px solid rgba(18, 68, 197, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.diagnostico-section .card-header {
+    border-bottom: 1px solid rgba(18, 68, 197, 0.1);
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.texto-principal {
+    color: rgba(18, 68, 197, 0.8);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+}
+
+.diagnostico-section .card-body {
+    padding: 2rem;
+}
+
+.diagnostico-section h4 {
+    color: #333;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.diagnostico-section .alert {
+    border-radius: 8px;
+    border: none;
+}
+
+.diagnostico-section .list-group-item {
+    border: 1px solid rgba(18, 68, 197, 0.1);
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .diagnostico-section {
+        padding-top: 100px;
+        min-height: calc(100vh - 100px);
+    }
+    
+    .diagnostico-section .container {
+        padding: 0 15px;
+    }
+    
+    .diagnostico-section .card-body {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .diagnostico-section {
+        padding-top: 90px;
+        min-height: calc(100vh - 90px);
+    }
+    
+    .diagnostico-section .card-body {
+        padding: 1rem;
+    }
+}
+</style>
+{% endblock %} 

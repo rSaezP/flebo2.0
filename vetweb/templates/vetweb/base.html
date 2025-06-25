@@ -185,12 +185,6 @@
             transition: all 0.3s ease;
             box-shadow: 0 8px 20px rgba(18, 68, 197, 0.2);
         }
-        .jura-<uniquifier> {
-            font-family: 'Raleway', sans-serif !important;
-            font-optical-sizing: auto;
-            font-weight: <weight>;
-            font-style: normal;
-          }
 
         .glass-btn:hover {
             transform: translateY(-3px);
@@ -312,7 +306,7 @@
 </head>
 
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
 
     <!-- Navegación Principal -->

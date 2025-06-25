@@ -8,6 +8,10 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.container .alert.alert-success {
+    margin-bottom: 40px !important;
+}
+
 .alert-success {
     background-color: #d4edda;
     color: #155724;

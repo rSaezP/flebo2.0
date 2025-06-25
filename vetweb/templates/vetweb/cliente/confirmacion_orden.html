@@ -2,15 +2,89 @@
 {% load humanize %}
 
 {% block content %}
-<div class="container my-5">
-    <div class="alert alert-success">
-        <h4 class="alert-heading">¡Orden creada exitosamente!</h4>
-        <p>Número de orden: <strong>#{{ orden.id }}</strong></p>
-        <p>Total: <strong>${{ orden.total|intcomma }}</strong></p>
-        <hr>
-        <a href="{% url 'vetweb:historial_compras' %}" class="btn btn-primary">
-            Ver historial de compras
-        </a>
+<div class="confirmacion-orden-section">
+    <div class="container my-5">
+        <div class="alert alert-success">
+            <h4 class="alert-heading">¡Orden creada exitosamente!</h4>
+            <p>Número de orden: <strong>#{{ orden.id }}</strong></p>
+            <p>Total: <strong>${{ orden.total|intcomma }}</strong></p>
+            <hr>
+            <a href="{% url 'vetweb:historial_compras' %}" class="btn btn-primary">
+                Ver historial de compras
+            </a>
+        </div>
     </div>
 </div>
+
+<style>
+.confirmacion-orden-section {
+    padding-top: 120px; /* Espacio suficiente para el navbar fijo */
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 120px);
+    position: relative;
+    z-index: 1;
+}
+
+.confirmacion-orden-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+.confirmacion-orden-section .alert {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border-left: 5px solid #28a745;
+}
+
+.confirmacion-orden-section .alert-heading {
+    color: #155724;
+    font-weight: 600;
+    font-family: 'Raleway', sans-serif;
+}
+
+.confirmacion-orden-section .alert p {
+    color: #155724;
+    font-family: 'Raleway', sans-serif;
+    margin-bottom: 0.5rem;
+}
+
+.confirmacion-orden-section .btn-primary {
+    background: var(--flebo-blue);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    font-family: 'Raleway', sans-serif;
+}
+
+.confirmacion-orden-section .btn-primary:hover {
+    background: var(--flebo-light-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(18, 68, 197, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .confirmacion-orden-section {
+        padding-top: 100px;
+        min-height: calc(100vh - 100px);
+    }
+    
+    .confirmacion-orden-section .container {
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .confirmacion-orden-section {
+        padding-top: 90px;
+        min-height: calc(100vh - 90px);
+    }
+}
+</style>
 {% endblock %}

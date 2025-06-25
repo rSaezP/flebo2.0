@@ -99,12 +99,7 @@ body {
     font-weight: 600;
 }
 
-/* Hero Slider */
-.hero-slider {
-    margin-top: 89px !important;
-    height: 70vh;
-    position: relative;
-}
+
 
 .carousel,
 .carousel-inner,
@@ -141,14 +136,16 @@ body {
 }
 
 .caption-content h1 {
+    
     font-family: 'Raleway', sans-serif !important;
-    font-size: 3.5rem;
+    font-size: 4.5rem !important;
     font-weight: 700;
-    margin-bottom: 20px;
-    line-height: 1.2;
+    margin-bottom: 25px;
+    line-height: 1.1;
     color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
+
 
 .caption-content p {
     font-family: 'Raleway', sans-serif !important;
@@ -353,13 +350,7 @@ body {
 }
 
 /* Estilos para Quiénes Somos */
-.about-card {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(17, 127, 239, 0.1);
-    border: 1px solid rgba(17, 127, 239, 0.2);
-}
+
 
 .mission-card,
 .vision-card {
@@ -392,73 +383,10 @@ body {
     color: var(--flebo-light-blue);
 }
 
-.about-image-section {
-    padding: 80px 0;
-    background-color: #f8f9fa;
-}
 
-.about-final-text {
-    padding: 30px;
-    background: white;
-    border-radius: 10px;
-    margin-left: -50px;
-    position: relative;
-    border: 1px solid rgba(17, 127, 239, 0.2);
-}
 
-/* Ajustes específicos para páginas especiales */
-.hero-slider.contact-page,
-.hero-slider.about-page {
-    position: relative;
-    z-index: 1;
-    margin: 0 !important;
-    padding: 0 !important;
-    margin-top: -89px !important;
-    height: 700px !important;
-    width: 100%;
-    overflow: hidden;
-}
 
-.hero-slider.contact-page .carousel-caption,
-.hero-slider.about-page .carousel-caption {
-    background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    padding: 2rem;
-    margin: 0;
-    border-radius: 0;
-}
 
-.hero-slider.about-page .carousel-inner {
-    height: 100%;
-}
-
-.hero-slider.about-page .carousel-item {
-    height: 100%;
-}
-
-.hero-slider.contact-page .caption-content,
-.hero-slider.about-page .caption-content {
-    z-index: 3;
-    position: relative;
-}
-
-.hero-slider.contact-page img,
-.hero-slider.about-page img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: center !important;
-    display: block !important;
-    margin: 0;
-    padding: 0;
-}
 
 /* Footer moderno */
 .footer-modern {
@@ -640,10 +568,7 @@ body {
     .nav-link {
         padding: 10px 0 !important;
     }
-    
-    .hero-slider {
-        height: 60vh !important;
-    }
+   
 
     .contact-form-container {
         padding: 0 15px;
@@ -653,10 +578,7 @@ body {
         font-size: 2.5rem;
     }
 
-    .about-final-text {
-        margin-left: 0;
-        margin-top: 20px;
-    }
+    
 
     /* Menú responsive mejorado */
     .navbar-collapse.show,

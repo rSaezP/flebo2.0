@@ -82,7 +82,11 @@ def lista_productos(request):
     return render(request, 'vetweb/productos.html', context)
 
 def obtener_carrito_de_usuario(usuario):
-    carrito, creado = Carrito.objects.get_or_create(user=usuario)
+    """Función centralizada para obtener o crear el carrito de un usuario"""
+    try:
+        carrito = Carrito.objects.get(user=usuario)
+    except Carrito.DoesNotExist:
+        carrito = Carrito.objects.create(user=usuario)
     return carrito
     
 def quienes_somos(request):
@@ -276,12 +280,12 @@ def producto_crear(request):
 @login_required
 @login_required
 def carrito_ver(request):
-    carrito, created = Carrito.objects.get_or_create(user=request.user)
+    carrito = obtener_carrito_de_usuario(request.user)
     
     # Calculamos los valores directamente en la vista
-    subtotal = carrito.get_subtotal
-    iva = carrito.get_iva  # 19% de IVA
-    total = carrito.get_total
+    subtotal = carrito.get_subtotal()
+    iva = carrito.get_iva()  # 19% de IVA
+    total = carrito.get_total()
     
     context = {
         'carrito': carrito,
@@ -298,7 +302,7 @@ def carrito_agregar(request, producto_id):
         return redirect('vetweb:productos')
     
     producto = get_object_or_404(Producto, id=producto_id)
-    carrito, created = Carrito.objects.get_or_create(user=request.user)
+    carrito = obtener_carrito_de_usuario(request.user)
     
     # Verificar si el producto ya está en el carrito
     carrito_item, item_created = CarritoItem.objects.get_or_create(
@@ -340,8 +344,13 @@ def historial_compras(request):
 
 @receiver(post_save, sender=User)
 def create_user_cart(sender, instance, created, **kwargs):
+    """Crear carrito automáticamente cuando se crea un usuario"""
     if created:
-        Carrito.objects.create(user=instance)
+        try:
+            Carrito.objects.create(user=instance)
+        except Exception as e:
+            # Si hay algún error, no hacer nada para evitar conflictos
+            pass
         
 @login_required
 def agregar_a_deseos(request, producto_id):
@@ -604,3 +613,66 @@ class CrearOrden(APIView):
     def post(self, request):
         orden = createOrder('productos')
         return Response(orden, status=status.HTTP_200_OK)
+
+def limpiar_carritos_huérfanos():
+    """Función para limpiar carritos sin usuario o items sin carrito"""
+    try:
+        # Eliminar carritos sin usuario
+        carritos_sin_usuario = Carrito.objects.filter(user__isnull=True)
+        carritos_sin_usuario.delete()
+        
+        # Eliminar items sin carrito
+        items_sin_carrito = CarritoItem.objects.filter(carrito__isnull=True)
+        items_sin_carrito.delete()
+        
+        return True
+    except Exception as e:
+        return False
+
+@login_required
+def diagnosticar_carrito(request):
+    """Vista de diagnóstico para verificar el estado del carrito del usuario"""
+    usuario = request.user
+    
+    # Verificar si el usuario tiene carrito
+    try:
+        carrito = Carrito.objects.get(user=usuario)
+        carrito_existe = True
+    except Carrito.DoesNotExist:
+        carrito_existe = False
+        carrito = None
+    
+    # Verificar items del carrito
+    if carrito:
+        items_count = carrito.items.count()
+        items_detalle = list(carrito.items.all().values('id', 'producto__nombre', 'cantidad'))
+    else:
+        items_count = 0
+        items_detalle = []
+    
+    # Intentar crear carrito si no existe
+    if not carrito_existe:
+        try:
+            carrito = Carrito.objects.create(user=usuario)
+            carrito_creado = True
+        except Exception as e:
+            carrito_creado = False
+            error = str(e)
+    else:
+        carrito_creado = False
+        error = None
+    
+    # Limpiar carritos huérfanos
+    limpieza_exitosa = limpiar_carritos_huérfanos()
+    
+    context = {
+        'usuario': usuario.username,
+        'carrito_existe': carrito_existe,
+        'carrito_creado': carrito_creado,
+        'items_count': items_count,
+        'items_detalle': items_detalle,
+        'limpieza_exitosa': limpieza_exitosa,
+        'error': error if 'error' in locals() else None,
+    }
+    
+    return render(request, 'vetweb/cliente/diagnostico_carrito.html', context)

@@ -1,0 +1,89 @@
+{% extends 'vetweb/base.html' %}
+
+{% block content %}
+<div class="historial-section">
+    <div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h2 class="mb-0 texto-principal">Historial de Compras</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Aquí aparecerán tus compras realizadas.</p>
+                <!-- Aquí se mostrará el historial de órdenes cuando esté implementado -->
+                <div class="text-center py-4">
+                    <i class="bi bi-clock-history" style="font-size: 3rem; color: #1244C5;"></i>
+                    <p class="mt-3">Próximamente: Historial de tus compras</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.historial-section {
+    padding-top: 120px; /* Espacio suficiente para el navbar fijo */
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 120px);
+    position: relative;
+    z-index: 1;
+}
+
+.historial-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+.historial-section .card {
+    border: 1px solid rgba(18, 68, 197, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.historial-section .card-header {
+    border-bottom: 1px solid rgba(18, 68, 197, 0.1);
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.texto-principal {
+    color: rgba(18, 68, 197, 0.8);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+}
+
+.historial-section .card-body {
+    padding: 2rem;
+}
+
+.historial-section .text-muted {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .historial-section {
+        padding-top: 100px;
+        min-height: calc(100vh - 100px);
+    }
+    
+    .historial-section .container {
+        padding: 0 15px;
+    }
+    
+    .historial-section .card-body {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .historial-section {
+        padding-top: 90px;
+        min-height: calc(100vh - 90px);
+    }
+    
+    .historial-section .card-body {
+        padding: 1rem;
+    }
+}
+</style>
+{% endblock %} 

@@ -60,6 +60,7 @@ urlpatterns = [
     path('carrito/', views.carrito_ver, name='carrito_ver'),
     path('carrito/agregar/<int:producto_id>/', views.carrito_agregar, name='carrito_agregar'),
     path('carrito/eliminar/<int:item_id>/', views.carrito_eliminar, name='carrito_eliminar'),
+    path('carrito/diagnostico/', views.diagnosticar_carrito, name='diagnostico_carrito'),
     
     # URLs del cliente
     path('mi-cuenta/historial/', views.historial_compras, name='historial_compras'),

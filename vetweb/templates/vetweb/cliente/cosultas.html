@@ -1,0 +1,21 @@
+{% extends 'vetweb/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h2>Historial de Compras</h2>
+    <p>Aquí aparecerán tus compras realizadas.</p>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.container.py-5 {
+    margin-top: 90px !important;
+}
+@media (max-width: 768px) {
+    .container.py-5 {
+        margin-top: 80px !important;
+    }
+}
+</style>
+{% endblock %}
