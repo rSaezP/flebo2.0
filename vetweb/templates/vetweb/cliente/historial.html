@@ -1,4 +1,5 @@
 {% extends 'vetweb/base.html' %}
+{% load humanize %}
 
 {% block content %}
 <div class="historial-section">
@@ -8,12 +9,70 @@
                 <h2 class="mb-0 texto-principal">Historial de Compras</h2>
             </div>
             <div class="card-body">
-                <p class="text-muted">Aquí aparecerán tus compras realizadas.</p>
-                <!-- Aquí se mostrará el historial de órdenes cuando esté implementado -->
-                <div class="text-center py-4">
-                    <i class="bi bi-clock-history" style="font-size: 3rem; color: #1244C5;"></i>
-                    <p class="mt-3">Próximamente: Historial de tus compras</p>
-                </div>
+                {% if ordenes %}
+                    <div class="row">
+                        {% for orden in ordenes %}
+                        <div class="col-12 mb-4">
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6">
+                                            <h5 class="mb-0">Orden #{{ orden.id }}</h5>
+                                            <small>{{ orden.created_at|date:"d/m/Y H:i" }}</small>
+                                        </div>
+                                        <div class="col-md-3 text-center">
+                                            <span class="badge bg-{% if orden.status == 'COMPLETED' %}success{% elif orden.status == 'PENDING' %}warning{% else %}danger{% endif %}">
+                                                {{ orden.get_status_display }}
+                                            </span>
+                                        </div>
+                                        <div class="col-md-3 text-end">
+                                            <strong>${{ orden.total|intcomma }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% for item in orden.items_detalle %}
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="d-flex align-items-center border rounded p-2">
+                                                {% if item.producto.imagen %}
+                                                <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" 
+                                                     class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                                {% else %}
+                                                <div class="me-3 bg-light d-flex align-items-center justify-content-center" 
+                                                     style="width: 60px; height: 60px;">
+                                                    <i class="bi bi-image text-muted"></i>
+                                                </div>
+                                                {% endif %}
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1">{{ item.producto.nombre }}</h6>
+                                                    <small class="text-muted">
+                                                        Cantidad: {{ item.cantidad }} | 
+                                                        Precio: ${{ item.precio_unitario|intcomma }}
+                                                    </small>
+                                                    <div class="fw-bold text-primary">
+                                                        ${{ item.get_subtotal|intcomma }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-clock-history" style="font-size: 3rem; color: #1244C5;"></i>
+                        <h4 class="mt-3">No tienes compras registradas</h4>
+                        <p class="text-muted">Cuando realices compras, aparecerán aquí.</p>
+                        <a href="{% url 'vetweb:productos' %}" class="btn btn-primary">
+                            <i class="bi bi-cart-plus"></i> Ir a Productos
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -21,7 +80,7 @@
 
 <style>
 .historial-section {
-    padding-top: 120px; /* Espacio suficiente para el navbar fijo */
+    padding-top: 120px;
     background-color: #f8f9fa;
     min-height: calc(100vh - 120px);
     position: relative;

@@ -340,7 +340,15 @@ def carrito_eliminar(request, item_id):
 @login_required
 def historial_compras(request):
     ordenes = Orden.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'vetweb/cliente/historial.html', {'ordenes': ordenes})
+    
+    # Obtener los items de cada orden para mostrar los productos
+    for orden in ordenes:
+        orden.items_detalle = OrdenItem.objects.filter(orden=orden).select_related('producto')
+    
+    context = {
+        'ordenes': ordenes,
+    }
+    return render(request, 'vetweb/cliente/historial.html', context)
 
 @receiver(post_save, sender=User)
 def create_user_cart(sender, instance, created, **kwargs):
